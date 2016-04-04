@@ -100,6 +100,7 @@ RUN conda install --yes \
     'scipy=0.16*' \
     'seaborn=0.6*' \
     'scikit-learn=0.16*' \
+    'statsmodels=0.6.1' \
     && conda clean -yt
 
 USER root
