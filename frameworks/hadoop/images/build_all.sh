@@ -20,7 +20,7 @@ while getopts ":hr:v:p" opt; do
           print_help
           ;;
         r)
-          REGISTRY=/$OPTARG
+          REGISTRY=$OPTARG/
           ;;
         v)
           VERSION=:$OPTARG
@@ -30,6 +30,7 @@ while getopts ":hr:v:p" opt; do
           ;;
     esac
 done
+shift $((OPTIND-1))
 
 if [ -z $1 ]; then
     print_help
