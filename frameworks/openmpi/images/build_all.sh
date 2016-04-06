@@ -38,7 +38,7 @@ fi
 
 REPOSITORY=$1
 
-for d in spark-master spark-worker spark-submit spark-jupyter-notebook; do
+for d in `find . -mindepth 1 -maxdepth 1 -type d -printf '%f '`; do
   pushd $d
   docker build -t ${REGISTRY}${REPOSITORY}/${d}${VERSION} .
   if [ $PUSH = 1 ]; then
