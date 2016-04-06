@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-def openmpi_worker_service(counter, worker_memory):
+def openmpi_worker_service(counter, image, worker_memory):
     """
     :type counter: int
     :type worker_memory: int
@@ -22,7 +22,7 @@ def openmpi_worker_service(counter, worker_memory):
     """
     service = {
         'name': "mpiworker{}".format(counter),
-        'docker_image': '192.168.45.252:5000/zoerepo/openmpi-worker',
+        'docker_image': image,
         'monitor': False,
         'required_resources': {"memory": worker_memory},
         'ports': [],
@@ -33,7 +33,7 @@ def openmpi_worker_service(counter, worker_memory):
     return service
 
 
-def openmpi_mpirun_service(mpirun_commandline, worker_memory):
+def openmpi_mpirun_service(mpirun_commandline, image, worker_memory):
     """
     :type mpirun_commandline: str
     :type worker_memory: int
@@ -41,7 +41,7 @@ def openmpi_mpirun_service(mpirun_commandline, worker_memory):
     """
     service = {
         'name': "mpirun",
-        'docker_image': '192.168.45.252:5000/zoerepo/openmpi-worker',
+        'docker_image': image,
         'monitor': True,
         'required_resources': {"memory": worker_memory},
         'ports': [],

@@ -25,7 +25,9 @@ import frameworks.openmpi.openmpi as openmpi_framework
 #################################
 
 APP_NAME = 'openmpi-hello'
-MPIRUN_COMMANDLINE = 'mpirun <options>'
+MPIRUN_COMMANDLINE = 'mpirun -hostfile hostlist MPI_Hello'
+MPIRUN_IMAGE = '192.168.45.252:5000/zoeapps/openmpi-ubuntu'
+WORKER_IMAGE = '192.168.45.252:5000/zoeapps/openmpi-ubuntu'
 WORKER_COUNT = 4
 CPU_COUNT_PER_WORKER = 1
 WORKER_MEMORY = 1024 ** 3
@@ -35,7 +37,7 @@ WORKER_MEMORY = 1024 ** 3
 #####################
 
 
-def openmpi_app(name, mpirun_commandline, worker_count, worker_memory):
+def openmpi_app(name, mpirun_image, worker_image, mpirun_commandline, worker_count, worker_memory):
     app = {
         'name': name,
         'version': 1,
@@ -45,15 +47,15 @@ def openmpi_app(name, mpirun_commandline, worker_count, worker_memory):
         'services': []
     }
     for i in range(worker_count):
-        proc = openmpi_framework.openmpi_worker_service(i, worker_memory)
+        proc = openmpi_framework.openmpi_worker_service(i, worker_image, worker_memory)
         app['services'].append(proc)
-    proc = openmpi_framework.openmpi_mpirun_service(mpirun_commandline, worker_memory)
+    proc = openmpi_framework.openmpi_mpirun_service(mpirun_commandline, mpirun_image, worker_memory)
     app['services'].append(proc)
     return app
 
 
 if __name__ == "__main__":
-    app_dict = openmpi_app(APP_NAME, MPIRUN_COMMANDLINE, WORKER_COUNT, WORKER_MEMORY)
+    app_dict = openmpi_app(APP_NAME, MPIRUN_IMAGE, WORKER_IMAGE, MPIRUN_COMMANDLINE, WORKER_COUNT, WORKER_MEMORY)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')
 
