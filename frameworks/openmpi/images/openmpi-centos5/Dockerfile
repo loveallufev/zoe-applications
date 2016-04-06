@@ -1,10 +1,15 @@
-FROM ubuntu:14.04
+FROM centos:5
 
 MAINTAINER Daniele Venzano <venza@brownhat.org>
 
-RUN apt-get update && apt-get install -y libopenmpi1.6 openmpi-bin openmpi-common openssh-server
+RUN yum -y update && yum -y install openssh-clients wget unzip openssh-server
 
-RUN mkdir /var/run/sshd
+COPY files/openmpi-1.6.5-1.x86_64.rpm /opt
+
+RUN yum -y install --nogpgcheck /opt/openmpi-1.6.5-1.x86_64.rpm
+
+RUN /etc/init.d/sshd start
+
 #RUN echo 'root:screencast' | chpasswd
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/#   StrictHostKeyChecking ask/   StrictHostKeyChecking no/' /etc/ssh/ssh_config
@@ -16,14 +21,7 @@ RUN mkdir -p /root/.ssh
 RUN ssh-keygen -q -t rsa -N '' -f /root/.ssh/id_rsa
 RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
-#RUN adduser -D -h /home/user -s /bin/ash user 
-#RUN passwd -u user
-
 EXPOSE 22
-
-VOLUME /mnt/workspace
-
-WORKDIR /mnt/workspace
 
 CMD ["/usr/sbin/sshd", "-D"]
 
