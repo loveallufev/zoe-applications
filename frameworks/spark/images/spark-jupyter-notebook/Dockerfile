@@ -88,7 +88,7 @@ RUN cd /tmp && \
 
 # Install Jupyter notebook as nbuser
 RUN conda install --yes \
-    'notebook=4.0*' \
+    'notebook=4.1*' \
     terminado \
     && conda clean -yt
 
@@ -101,6 +101,7 @@ RUN conda install --yes \
     'seaborn=0.6*' \
     'scikit-learn=0.16*' \
     'statsmodels=0.6.1' \
+    'basemap' \
     && conda clean -yt
 
 USER root
