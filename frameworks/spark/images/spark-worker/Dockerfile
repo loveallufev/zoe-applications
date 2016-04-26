@@ -31,6 +31,32 @@ EXPOSE 8888 8081
 ENV SPARK_WORKER_PORT 8888
 ENV SPARK_WORKER_WEBUI_PORT 8081
 
-RUN apt-get update && apt-get -y install python3 python3-numpy
+# Configure environment
+ENV CONDA_DIR /opt/conda
+ENV PATH $CONDA_DIR/bin:$PATH
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.8.2.1-src.zip
+ENV PYSPARK_PYTHON=/opt/conda/bin/python
+
+# Install conda
+RUN cd /tmp && \
+    mkdir -p $CONDA_DIR && \
+    wget http://repo.continuum.io/miniconda/Miniconda3-3.9.1-Linux-x86_64.sh && \
+    echo "6c6b44acdd0bc4229377ee10d52c8ac6160c336d9cdd669db7371aa9344e1ac3 *Miniconda3-3.9.1-Linux-x86_64.sh" | sha256sum -c - && \
+    /bin/bash Miniconda3-3.9.1-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-3.9.1-Linux-x86_64.sh && \
+    $CONDA_DIR/bin/conda install --yes conda==3.14.1
+
+# Install Python 3 packages
+RUN conda install --yes \
+    'pandas=0.17*' \
+    'matplotlib=1.4*' \
+    'scipy=0.16*' \
+    'seaborn=0.6*' \
+    'scikit-learn=0.16*' \
+    'statsmodels=0.6.1' \
+    && conda clean -yt
 
 CMD /opt/start-worker.sh
