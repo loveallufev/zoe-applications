@@ -2,7 +2,7 @@
 import os
 
 # make sure pyspark tells workers to use python3 not 2 if both are installed
-os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
+os.environ['PYSPARK_PYTHON'] = '/opt/conda/bin/python'
 
 if 'SPARK_MASTER' in os.environ:
 	import pyspark
