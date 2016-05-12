@@ -1,6 +1,6 @@
-# Spark Scala Notebook image
+# Jupyter Notebook image
 
-This image contains the Scala notebook (https://github.com/andypetrella/spark-notebook). It is used by Zoe, the Container Analytics as a
+This image contains the Jupyter notebook configured with Pythen and a Spark client. It is used by Zoe, the Container Analytics as a
 Service system to create on-demand notebooks connected to containerized Spark clusters.
 
 Zoe can be found at: https://github.com/DistributedSystemsGroup/zoe
