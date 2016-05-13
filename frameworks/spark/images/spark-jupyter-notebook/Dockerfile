@@ -43,6 +43,7 @@ RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
     sudo \
     locales \
     libxrender1 \
+    libopenblas-dev \
     && apt-get clean
 
 RUN locale-gen en_US.UTF-8
