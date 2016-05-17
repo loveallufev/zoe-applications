@@ -9,7 +9,7 @@ RUN /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin
 RUN apt-get update && apt-get -y install oracle-java7-installer oracle-java7-set-default curl
 
 ARG SPARK_VERSION
-ENV SPARK_VERSION ${SPARK_VERSION:-1.5.2}
+ENV SPARK_VERSION ${SPARK_VERSION:-1.6.1}
 
 ARG HADOOP_VERSION
 ENV HADOOP_VERSION ${HADOOP_VERSION:-hadoop2.6}
@@ -44,6 +44,7 @@ RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
     locales \
     libxrender1 \
     libopenblas-dev \
+    libjpeg-dev \
     && apt-get clean
 
 RUN locale-gen en_US.UTF-8
@@ -60,23 +61,16 @@ ENV HADOOP_HOME /opt/hadoop
 ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
 ENV PATH $HADOOP_HOME/bin:$CONDA_DIR/bin:$PATH
 ENV SHELL /bin/bash
-ENV NB_USER nbuser
-ENV NB_UID 1000
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.8.2.1-src.zip
 ENV HADOOP_VERSION 2.6.1
 
-# Create nbuser user with UID=1000 and in the 'users' group
-RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && mkdir -p /opt/conda && chown $NB_USER /opt/conda
-
-USER nbuser
-
 # Setup nbuser home directory
-RUN mkdir /home/$NB_USER/work && \
-    mkdir /home/$NB_USER/.jupyter && \
-    mkdir /home/$NB_USER/.local
+RUN ln -s /mnt/workspace /root/work && \
+    mkdir /root/.jupyter && \
+    mkdir /root/.local
 
 # Install conda as nbuser
 RUN cd /tmp && \
@@ -102,14 +96,15 @@ RUN conda install --yes \
     'seaborn=0.6*' \
     'scikit-learn=0.16*' \
     'statsmodels=0.6.1' \
+    'pillow' \
     'basemap' \
     && conda clean -yt
-
-USER root
 
 RUN curl -s http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz | tar -xz -C /opt/
 
 RUN ln -s /opt/hadoop-${HADOOP_VERSION} /opt/hadoop
+
+RUN /opt/conda/bin/pip install thunder-python==0.6.0
 
 # Add Spark JARs
 RUN curl http://central.maven.org/maven2/com/databricks/spark-csv_2.10/1.3.0/spark-csv_2.10-1.3.0.jar -o /opt/spark/com.databricks_spark-csv_2.10-1.3.0.jar
@@ -120,18 +115,16 @@ COPY files/spark-defaults.conf /opt/spark-defaults.conf
 
 # Configure container startup as root
 EXPOSE 4040 8888
-WORKDIR /home/$NB_USER/work
+WORKDIR /root/work
 ENTRYPOINT ["tini", "--"]
 CMD ["start-notebook.sh"]
 
 # Add local files as late as possible to avoid cache busting
 COPY files/start-notebook.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/start-notebook.sh
-COPY files/jupyter_notebook_config.py /home/$NB_USER/.jupyter/
-RUN chown -R $NB_USER:users /home/$NB_USER/.jupyter
-RUN mkdir -p /home/$NB_USER/.ipython/profile_default/startup/
-COPY files/00-pyspark-setup.py /home/$NB_USER/.ipython/profile_default/startup/
-RUN chown -R $NB_USER:users /home/$NB_USER/.ipython
+COPY files/jupyter_notebook_config.py $HOME/.jupyter/
+RUN mkdir -p $HOME/.ipython/profile_default/startup/
+COPY files/00-pyspark-setup.py $HOME/.ipython/profile_default/startup/
 
 COPY files/core-site.xml /opt
 COPY files/hdfs-site.xml /opt

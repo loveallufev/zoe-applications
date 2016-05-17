@@ -36,6 +36,7 @@ def spark_master_service(mem_limit, image):
         ],
         'environment': [
             ["SPARK_MASTER_IP", "spark-master-{execution_name}-{user_name}-{deployment_name}-zoe.{user_name}-{deployment_name}-zoe"],
+            ["HADOOP_USER_NAME", "{user_name}"]
         ],
         'networks': []
     }
@@ -77,7 +78,8 @@ def spark_worker_service(count, mem_limit, cores, image):
                 ["SPARK_WORKER_CORES", str(cores)],
                 ["SPARK_WORKER_RAM", str(worker_ram)],
                 ["SPARK_MASTER_IP", "spark-master-{execution_name}-{user_name}-{deployment_name}-zoe.{user_name}-{deployment_name}-zoe"],
-                ["SPARK_LOCAL_IP", "spark-worker" + str(i) + "-{execution_name}-{user_name}-{deployment_name}-zoe.{user_name}-{deployment_name}-zoe"]
+                ["SPARK_LOCAL_IP", "spark-worker" + str(i) + "-{execution_name}-{user_name}-{deployment_name}-zoe.{user_name}-{deployment_name}-zoe"],
+                ["HADOOP_USER_NAME", "{user_name}"]
             ],
             'networks': []
         }
@@ -110,7 +112,8 @@ def spark_submit_service(mem_limit, worker_mem_limit, image, command):
         ],
         'environment': [
             ["SPARK_MASTER_IP", "spark-master-{execution_name}-{user_name}-{deployment_name}-zoe.{user_name}-{deployment_name}-zoe"],
-            ["SPARK_EXECUTOR_RAM", str(executor_ram)]
+            ["SPARK_EXECUTOR_RAM", str(executor_ram)],
+            ["HADOOP_USER_NAME", "{user_name}"]
         ],
         'command': command
     }
