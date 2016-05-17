@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ app_name }}</title>
+</head>
+<body>
+<h1>{{ app_name }} options</h1>
+<form method="post" action="/gen_app">
+    <input type="hidden" name="app_base" value="{{ app_base }}">
+    {% for opt in options %}
+    {% if 'image' in opt[0] %}
+    <label>{{ opt[2] }}: <select name="{{ opt[0] }}">
+        {% for image in image_list %}
+        {% if image == opt[1] %}
+        <option value="{{ image }}" selected>{{ image }}</option>
+        {% else %}
+        <option value="{{ image }}">{{ image }}</option>
+        {% end %}
+        {% end %}
+    </select>
+    </label><br>
+    {% else %}
+    <label>{{ opt[2] }}: <input type="text" name="{{ opt[0] }}" value="{{ opt[1] }}"></label><br>
+    {% end %}
+    {% end %}
+    <input type="submit" value="Download description">
+</form>
+</body>
+</html>

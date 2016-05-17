@@ -20,34 +20,39 @@ import json
 sys.path.append('../..')
 from frameworks.jupyter.jupyter import jupyter_notebook_service
 
+APP_NAME = 'Jupyter notebook'
+
 #################################
 # Zoe Application customization #
 #################################
 
-APP_NAME = 'notebook'
-DOCKER_IMAGE = '192.168.45.252:5000/apps/jupyter-notebook'
-MEM_LIMIT = 4 * (1024 ** 3)
+options = [
+    ('image', '192.168.45.252:5000/apps/jupyter-notebook', 'Docker image'),
+    ('mem_limit', 4 * (1024 ** 3), 'Memory reservation (bytes)')
+]
 
 #####################
 # END CUSTOMIZATION #
 #####################
 
 
-def notebook_app(app_name):
+def gen_app(image, mem_limit):
     app = {
-        'name': app_name,
+        'name': APP_NAME,
         'version': 1,
         'will_end': True,
         'priority': 512,
         'requires_binary': False,
         'services': [
-            jupyter_notebook_service(MEM_LIMIT, DOCKER_IMAGE)
+            jupyter_notebook_service(int(mem_limit), image)
         ]
     }
     return app
 
 if __name__ == "__main__":
-    app_dict = notebook_app(APP_NAME)
+    args = {}
+    for opt in options:
+        args[opt[0]] = opt[1]
+    app_dict = gen_app(**args)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')
-
