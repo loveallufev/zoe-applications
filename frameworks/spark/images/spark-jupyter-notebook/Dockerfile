@@ -122,9 +122,9 @@ CMD ["start-notebook.sh"]
 # Add local files as late as possible to avoid cache busting
 COPY files/start-notebook.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/start-notebook.sh
-COPY files/jupyter_notebook_config.py $HOME/.jupyter/
-RUN mkdir -p $HOME/.ipython/profile_default/startup/
-COPY files/00-pyspark-setup.py $HOME/.ipython/profile_default/startup/
+COPY files/jupyter_notebook_config.py /root/.jupyter/
+RUN mkdir -p /root/.ipython/profile_default/startup/
+COPY files/00-pyspark-setup.py /root/.ipython/profile_default/startup/
 
 COPY files/core-site.xml /opt
 COPY files/hdfs-site.xml /opt

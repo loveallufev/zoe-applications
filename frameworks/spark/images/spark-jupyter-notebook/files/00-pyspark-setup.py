@@ -15,4 +15,3 @@ if 'SPARK_MASTER' in os.environ:
 
 	# create the context
 	sc = pyspark.SparkContext(conf=conf)
-
