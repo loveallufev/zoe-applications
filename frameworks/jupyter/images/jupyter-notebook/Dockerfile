@@ -51,25 +51,16 @@ RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.6.0/tini &
 
 # Configure environment
 ENV CONDA_DIR /opt/conda
-ENV PATH $HADOOP_HOME/bin:$CONDA_DIR/bin:$PATH
+ENV PATH $CONDA_DIR/bin:$PATH
 ENV SHELL /bin/bash
-ENV NB_USER nbuser
-ENV NB_UID 1000
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-# Create nbuser user with UID=1000 and in the 'users' group
-RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && mkdir -p /opt/conda && chown $NB_USER /opt/conda
+RUN mkdir /root/work && \
+    mkdir /root/.jupyter && \
+    mkdir /root/.local
 
-USER nbuser
-
-# Setup nbuser home directory
-RUN mkdir /home/$NB_USER/work && \
-    mkdir /home/$NB_USER/.jupyter && \
-    mkdir /home/$NB_USER/.local
-
-# Install conda as nbuser
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
     wget http://repo.continuum.io/miniconda/Miniconda3-3.9.1-Linux-x86_64.sh && \
@@ -78,14 +69,9 @@ RUN cd /tmp && \
     rm Miniconda3-3.9.1-Linux-x86_64.sh && \
     $CONDA_DIR/bin/conda install --yes conda==3.14.1
 
-# Install Jupyter notebook as nbuser
 RUN conda install --yes \
     'notebook=4.1*' \
     terminado \
-    && conda clean -yt
-
-# Install Python 3 packages
-RUN conda install --yes \
     'ipywidgets=4.0*' \
     'pandas=0.17*' \
     'matplotlib=1.4*' \
@@ -95,18 +81,15 @@ RUN conda install --yes \
     'statsmodels=0.6.1' \
     'ipyparallel' \
     'basemap' \
+    'pillow' \
     && conda clean -yt
 
-USER root
+RUN /opt/conda/bin/pip install thunder-python showit
 
 RUN wget https://oss.sonatype.org/content/repositories/snapshots/com/github/alexarchambault/jupyter/jupyter-scala-cli_2.11.6/0.2.0-SNAPSHOT/jupyter-scala_2.11.6-0.2.0-SNAPSHOT.tar.xz
 RUN tar xvfJ jupyter-scala_2.11.6-0.2.0-SNAPSHOT.tar.xz && rm jupyter-scala_2.11.6-0.2.0-SNAPSHOT.tar.xz
 
-USER nbuser
-
 RUN jupyter-scala_2.11.6-0.2.0-SNAPSHOT/bin/jupyter-scala
-
-USER root
 
 RUN R -e "install.packages(c('pbdZMQ', 'repr', 'devtools'), repos = 'http://cran.rstudio.com/')"
 RUN R -e "devtools::install_github('irkernel/IRdisplay')"
@@ -114,17 +97,14 @@ RUN R -e "devtools::install_github('irkernel/IRkernel')"
 RUN R -e "IRkernel::installspec(user = FALSE)"
 
 # Configure container startup as root
-EXPOSE 4040 8888
-WORKDIR /home/$NB_USER/work
+EXPOSE 8888
+RUN ln -s /mnt/workspace /root/work
+WORKDIR /root/work
 ENTRYPOINT ["tini", "--"]
 CMD ["start-notebook.sh"]
 
 # Add local files as late as possible to avoid cache busting
 COPY files/start-notebook.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/start-notebook.sh
-COPY files/jupyter_notebook_config.py /home/$NB_USER/.jupyter/
-RUN chown -R $NB_USER:users /home/$NB_USER/.jupyter
-RUN mkdir -p /home/$NB_USER/.ipython/profile_default/startup/
-#COPY files/00-pyspark-setup.py /home/$NB_USER/.ipython/profile_default/startup/
-RUN chown -R $NB_USER:users /home/$NB_USER/.ipython
-
+COPY files/jupyter_notebook_config.py /root/.jupyter/
+RUN mkdir -p /root/.ipython/profile_default/startup/

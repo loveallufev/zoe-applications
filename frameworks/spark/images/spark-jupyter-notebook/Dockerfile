@@ -104,7 +104,7 @@ RUN curl http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-
 
 RUN ln -s /opt/hadoop-${HADOOP_VERSION} /opt/hadoop
 
-RUN /opt/conda/bin/pip install thunder-python==0.6.0
+RUN /opt/conda/bin/pip install thunder-python showit
 
 # Add Spark JARs
 RUN curl http://central.maven.org/maven2/com/databricks/spark-csv_2.10/1.3.0/spark-csv_2.10-1.3.0.jar -o /opt/spark/com.databricks_spark-csv_2.10-1.3.0.jar
