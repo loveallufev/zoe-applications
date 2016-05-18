@@ -41,7 +41,8 @@ def spark_jupyter_notebook_service(mem_limit, worker_mem_limit, image):
                 'protocol': "http",
                 'port_number': 8888,
                 'path': "/",
-                'is_main_endpoint': True
+                'is_main_endpoint': True,
+                'expose': True
             }
         ],
         'environment': [
