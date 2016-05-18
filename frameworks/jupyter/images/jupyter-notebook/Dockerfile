@@ -98,8 +98,7 @@ RUN R -e "IRkernel::installspec(user = FALSE)"
 
 # Configure container startup as root
 EXPOSE 8888
-RUN ln -s /mnt/workspace /root/work
-WORKDIR /root/work
+WORKDIR /mnt/workspace
 ENTRYPOINT ["tini", "--"]
 CMD ["start-notebook.sh"]
 

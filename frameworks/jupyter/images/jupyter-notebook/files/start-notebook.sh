@@ -2,8 +2,6 @@
 
 set -x
 
-cd $HOME/work
-
 R -e "IRkernel::installspec()"
 ipcluster nbextension enable
 
