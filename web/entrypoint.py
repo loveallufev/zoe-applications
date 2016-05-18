@@ -46,7 +46,3 @@ def zoe_web_apps_main() -> int:
         ioloop.start()
     except KeyboardInterrupt:
         print("CTRL-C detected, terminating")
-
-
-if __name__ == '__main__':
-    zoe_web_apps_main()
