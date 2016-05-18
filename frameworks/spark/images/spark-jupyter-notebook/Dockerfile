@@ -100,7 +100,7 @@ RUN conda install --yes \
     'basemap' \
     && conda clean -yt
 
-RUN curl -s http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz | tar -xz -C /opt/
+RUN curl http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz | tar -xz -C /opt/
 
 RUN ln -s /opt/hadoop-${HADOOP_VERSION} /opt/hadoop
 

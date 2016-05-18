@@ -26,30 +26,31 @@ import frameworks.spark.spark_jupyter as spark_jupyter
 #################################
 
 APP_NAME = 'spark-jupyter'
-SPARK_MASTER_MEMORY_LIMIT = 512 * (1024**2)  # 512MB
-SPARK_WORKER_MEMORY_LIMIT = 12 * (1024**3)  # 12GB
-NOTEBOOK_MEMORY_LIMIT = 4 * (1024**3)  # 4GB, contains also the Spark client
-SPARK_WORKER_CORES = 4
-SPARK_WORKER_COUNT = 2
-DOCKER_REGISTRY = '192.168.45.252:5000'  # Set to None to use images from the Docker Hub
-SPARK_MASTER_IMAGE = 'zoerepo/spark-master'
-SPARK_WORKER_IMAGE = 'zoerepo/spark-worker'
-NOTEBOOK_IMAGE = 'zoerepo/spark-jupyter-notebook'
+
+options = [
+    ('master_mem_limit', 512 * (1024**2), 'Spark Master memory limit (bytes)'),
+    ('worker_mem_limit', 12 * (1024**3), 'Spark Worker memory limit (bytes)'),
+    ('notebook_mem_limit', 12 * (1024**3), 'Notebook memory limit (bytes)'),
+    ('worker_cores', 6, 'Cores used by each worker'),
+    ('worker_count', 2, 'Number of workers'),
+    ('master_image', '192.168.45.252:5000/zoerepo/spark-master', 'Spark Master image'),
+    ('worker_image', '192.168.45.252:5000/zoerepo/spark-worker', 'Spark Worker image'),
+    ('notebook_image', '192.168.45.252:5000/zoerepo/spark-jupyter-notebook', 'Jupyter notebook image'),
+]
 
 #####################
 # END CUSTOMIZATION #
 #####################
 
 
-def spark_jupyter_notebook_app(name,
-                               notebook_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
-                               worker_count,
-                               master_image, worker_image, notebook_image):
+def gen_app(notebook_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
+            worker_count,
+            master_image, worker_image, notebook_image):
     sp_master = spark_framework.spark_master_service(master_mem_limit, master_image)
     sp_workers = spark_framework.spark_worker_service(worker_count, worker_mem_limit, worker_cores, worker_image)
 
     app = {
-        'name': name,
+        'name': APP_NAME,
         'version': 1,
         'will_end': False,
         'priority': 512,
@@ -62,11 +63,9 @@ def spark_jupyter_notebook_app(name,
     return app
 
 if __name__ == "__main__":
-    if DOCKER_REGISTRY is not None:
-        SPARK_MASTER_IMAGE = DOCKER_REGISTRY + '/' + SPARK_MASTER_IMAGE
-        SPARK_WORKER_IMAGE = DOCKER_REGISTRY + '/' + SPARK_WORKER_IMAGE
-        NOTEBOOK_IMAGE = DOCKER_REGISTRY + '/' + NOTEBOOK_IMAGE
-
-    app_dict = spark_jupyter_notebook_app(APP_NAME, NOTEBOOK_MEMORY_LIMIT, SPARK_MASTER_MEMORY_LIMIT, SPARK_WORKER_MEMORY_LIMIT, SPARK_WORKER_CORES, SPARK_WORKER_COUNT, SPARK_MASTER_IMAGE, SPARK_WORKER_IMAGE, NOTEBOOK_IMAGE)
+    args = {}
+    for opt in options:
+        args[opt[0]] = opt[1]
+    app_dict = gen_app(**args)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')

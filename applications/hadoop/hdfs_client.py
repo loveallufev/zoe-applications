@@ -25,34 +25,39 @@ import frameworks.hadoop.hadoop as hadoop_framework
 #################################
 
 APP_NAME = 'hdfs-client'
-IMAGE = 'zoerepo/hadoop-client'
-NAMENODE_HOST = 'hdfs-namenode.hdfs'
-DOCKER_REGISTRY = '192.168.45.252:5000'  # Set to None to use images from the Docker Hub
-USER = 'root'
-COMMAND = 'hdfs dfs -ls /'
+
+options = [
+    ('image', '192.168.45.252:5000/zoerepo/hadoop-client', 'Image name'),
+    ('namenode', 'hdfs-namenode.hdfs', 'Namenode hostname'),
+    ('user', 'root', 'User to run the command as'),
+    ('command', 'hdfs dfs -ls /', 'HDFS command to run'),
+    ('hdfs_network_id', 'eeef9754c16790a29d5210c5d9ad8e66614ee8a6229b6dc6f779019d46cec792', 'HDFS docker network ID')
+]
 
 #####################
 # END CUSTOMIZATION #
 #####################
 
 
-def hdfs_client_app(name, image, namenode, user, command):
+def gen_app(image, namenode, user, command, hdfs_network_id):
+    hdfs_client = hadoop_framework.hadoop_client_service(image, namenode, user, command)
+    hdfs_client['networks'].append(hdfs_network_id)
     app = {
-        'name': name,
+        'name': APP_NAME,
         'version': 1,
         'will_end': True,
         'priority': 512,
         'requires_binary': False,
         'services': [
-            hadoop_framework.hadoop_client_service(image, namenode, user, command)
+            hdfs_client
         ]
     }
     return app
 
 if __name__ == "__main__":
-    if DOCKER_REGISTRY is not None:
-        IMAGE = DOCKER_REGISTRY + '/' + IMAGE
-
-    app_dict = hdfs_client_app(APP_NAME, IMAGE, NAMENODE_HOST, USER, COMMAND)
+    args = {}
+    for opt in options:
+        args[opt[0]] = opt[1]
+    app_dict = gen_app(**args)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')

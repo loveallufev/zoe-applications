@@ -33,6 +33,8 @@ def hadoop_namenode_service(image):
                 'is_main_endpoint': True
             }
         ],
+        'networks': [],
+        'volumes': [],
         'environment': [
             ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
         ]
@@ -54,6 +56,8 @@ def hadoop_datanode_service(count, image):
             'monitor': False,
             'required_resources': {"memory": 1 * 1024 * 1024 * 1024},  # 1 GB
             'ports': [],
+            'networks': [],
+            'volumes': [],
             'environment': [
                 ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
             ]
@@ -80,6 +84,8 @@ def hadoop_client_service(image, namenode_address, user, command):
             ["NAMENODE_HOST", namenode_address],
             ["HDFS_USER", user]
         ],
+        'networks': [],
+        'volumes': [],
         'command': command
     }
     return service

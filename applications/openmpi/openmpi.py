@@ -24,22 +24,25 @@ import frameworks.openmpi.openmpi as openmpi_framework
 # Zoe Application customization #
 #################################
 
-APP_NAME = 'openmpi-hello'
-MPIRUN_COMMANDLINE = 'mpirun -hostfile hostlist MPI_Hello'
-MPIRUN_IMAGE = '192.168.45.252:5000/zoeapps/openmpi-ubuntu'
-WORKER_IMAGE = '192.168.45.252:5000/zoeapps/openmpi-ubuntu'
-WORKER_COUNT = 4
-CPU_COUNT_PER_WORKER = 1
-WORKER_MEMORY = 1024 ** 3
+APP_NAME = 'openmpi'
+
+options = [
+    ('commandline', 'mpirun -hostfile hostlist MPI_Hello', 'mpirun commandline'),
+    ('mpirun_image', '192.168.45.252:5000/zoeapps/openmpi-ubuntu', 'Image for the mpirun process'),
+    ('worker_image', '192.168.45.252:5000/zoeapps/openmpi-ubuntu', 'Image for the worker processes'),
+    ('worker_count', 4, 'Number of worker processes'),
+    ('cpu_per_worker', 1, 'CPU count per worker'),
+    ('worker_memory', 1024 ** 3, 'Memory reservation for each worker')
+]
 
 #####################
 # END CUSTOMIZATION #
 #####################
 
 
-def openmpi_app(name, mpirun_image, worker_image, mpirun_commandline, worker_count, worker_memory):
+def gen_app(mpirun_image, worker_image, commandline, worker_count, worker_memory):
     app = {
-        'name': name,
+        'name': APP_NAME,
         'version': 1,
         'will_end': True,
         'priority': 512,
@@ -49,16 +52,19 @@ def openmpi_app(name, mpirun_image, worker_image, mpirun_commandline, worker_cou
     for i in range(worker_count):
         proc = openmpi_framework.openmpi_worker_service(i, worker_image, worker_memory)
         app['services'].append(proc)
-    proc = openmpi_framework.openmpi_mpirun_service(mpirun_commandline, mpirun_image, worker_memory)
+    proc = openmpi_framework.openmpi_mpirun_service(commandline, mpirun_image, worker_memory)
     app['services'].append(proc)
     return app
 
 
 if __name__ == "__main__":
-    app_dict = openmpi_app(APP_NAME, MPIRUN_IMAGE, WORKER_IMAGE, MPIRUN_COMMANDLINE, WORKER_COUNT, WORKER_MEMORY)
+    args = {}
+    for opt in options:
+        args[opt[0]] = opt[1]
+    app_dict = gen_app(**args)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')
 
     sys.stderr.write('### Copy and customize the following lines to the hostlist file passed to mpirun #####\n')
-    for wc in range(WORKER_COUNT):
-        sys.stderr.write('mpiworker{}-##Zoe execution name##-##zoe user name##-##zoe deployment name##-zoe:{}\n'.format(wc, CPU_COUNT_PER_WORKER))
+    for wc in range(options[3][1]):
+        sys.stderr.write('mpiworker{}-##Zoe execution name##-##zoe user name##-##zoe deployment name##-zoe:{}\n'.format(wc, options[4][1]))

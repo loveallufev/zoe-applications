@@ -25,16 +25,18 @@ from frameworks.utils.utils import sleeper_service
 #################################
 
 APP_NAME = 'sleeper'
-SLEEP_DURATION = 5  # seconds
+options = [
+    ('sleep_duration', 5, 'Amount of time to sleep (seconds)')
+]
 
 #####################
 # END CUSTOMIZATION #
 #####################
 
 
-def sleeper_app(name, sleep_duration):
+def gen_app(sleep_duration):
     app = {
-        'name': name,
+        'name': APP_NAME,
         'version': 1,
         'will_end': True,
         'priority': 512,
@@ -46,6 +48,9 @@ def sleeper_app(name, sleep_duration):
     return app
 
 if __name__ == "__main__":
-    app_dict = sleeper_app(APP_NAME, SLEEP_DURATION)
+    args = {}
+    for opt in options:
+        args[opt[0]] = opt[1]
+    app_dict = gen_app(**args)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')

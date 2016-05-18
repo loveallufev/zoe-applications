@@ -17,8 +17,11 @@ import tornado.web
 
 import web.base_handler
 
+import applications.hadoop.hdfs_client
 import applications.misc.notebook
+import applications.misc.sleeper
 import applications.spark_jupyter.eurecom_aml_lab
+import applications.spark_submit.spark_submit
 
 
 class GenAppHandler(web.base_handler.BaseHandler):
@@ -31,6 +34,15 @@ class GenAppHandler(web.base_handler.BaseHandler):
         elif app_base == 'spark_notebook':
             gen_func = applications.spark_jupyter.eurecom_aml_lab.gen_app
             options = applications.spark_jupyter.eurecom_aml_lab.options
+        elif app_base == 'spark_submit':
+            gen_func = applications.spark_submit.spark_submit.gen_app
+            options = applications.spark_submit.spark_submit.options
+        elif app_base == 'test_app':
+            gen_func = applications.misc.sleeper.gen_app
+            options = applications.misc.sleeper.options
+        elif app_base == 'hdfs_client':
+            gen_func = applications.hadoop.hdfs_client.gen_app
+            options = applications.hadoop.hdfs_client.options
         else:
             self.set_status(404)
             self.finish()

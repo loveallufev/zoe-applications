@@ -21,8 +21,11 @@ import tornado.httpclient
 import web.base_handler
 from web.config import get_conf
 
+import applications.hadoop.hdfs_client
 import applications.misc.notebook
+import applications.misc.sleeper
 import applications.spark_jupyter.eurecom_aml_lab
+import applications.spark_submit.spark_submit
 
 
 class NewAppHandler(web.base_handler.BaseHandler):
@@ -40,6 +43,15 @@ class NewAppHandler(web.base_handler.BaseHandler):
         elif app_base == 'spark_notebook':
             app_name = applications.spark_jupyter.eurecom_aml_lab.APP_NAME
             options = applications.spark_jupyter.eurecom_aml_lab.options
+        elif app_base == 'spark_submit':
+            app_name = applications.spark_submit.spark_submit.APP_NAME
+            options = applications.spark_submit.spark_submit.options
+        elif app_base == 'test_app':
+            app_name = applications.misc.sleeper.APP_NAME
+            options = applications.misc.sleeper.options
+        elif app_base == 'hdfs_client':
+            app_name = applications.hadoop.hdfs_client.APP_NAME
+            options = applications.hadoop.hdfs_client.options
         else:
             self.redirect('/')
             return
