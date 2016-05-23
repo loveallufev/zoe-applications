@@ -72,12 +72,12 @@ RUN cd /tmp && \
 RUN conda install --yes \
     'notebook=4.1*' \
     terminado \
-    'ipywidgets=4.0*' \
-    'pandas=0.17*' \
-    'matplotlib=1.4*' \
-    'scipy=0.16*' \
+    'ipywidgets=4.1*' \
+    'pandas=0.18*' \
+    'matplotlib=1.5*' \
+    'scipy=0.17*' \
     'seaborn=0.6*' \
-    'scikit-learn=0.16*' \
+    'scikit-learn=0.17*' \
     'statsmodels=0.6.1' \
     'ipyparallel' \
     'basemap' \
