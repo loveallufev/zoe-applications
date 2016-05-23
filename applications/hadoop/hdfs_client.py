@@ -44,7 +44,7 @@ def gen_app(image, namenode, user, command, hdfs_network_id):
     hdfs_client['networks'].append(hdfs_network_id)
     app = {
         'name': APP_NAME,
-        'version': 1,
+        'version': 2,
         'will_end': True,
         'priority': 512,
         'requires_binary': False,

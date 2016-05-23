@@ -47,18 +47,19 @@ def gen_app(notebook_mem_limit, master_mem_limit, worker_mem_limit, worker_cores
             worker_count,
             master_image, worker_image, notebook_image):
     sp_master = spark_framework.spark_master_service(master_mem_limit, master_image)
-    sp_workers = spark_framework.spark_worker_service(worker_count, worker_mem_limit, worker_cores, worker_image)
+    sp_worker = spark_framework.spark_worker_service(worker_count, worker_mem_limit, worker_cores, worker_image)
 
     app = {
         'name': APP_NAME,
-        'version': 1,
+        'version': 2,
         'will_end': False,
         'priority': 512,
         'requires_binary': False,
         'services': [
             sp_master,
+            sp_worker,
             spark_jupyter.spark_jupyter_notebook_service(notebook_mem_limit, worker_mem_limit, notebook_image)
-        ] + sp_workers
+        ]
     }
     return app
 

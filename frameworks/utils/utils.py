@@ -32,7 +32,10 @@ def copier_service(src_volume_host_path, src_path, dst_path):
         'ports': [],
         'environment': [],
         'volumes': [],
-        'command': ''
+        'command': '',
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 0
     }
     service['volumes'].append([src_volume_host_path, '/mnt/copy-src', True])
     service['command'] = 'cp -a ' + os.path.join('/mnt/copy-src', src_path) + ' ' + os.path.join('/mnt/workspace', dst_path)

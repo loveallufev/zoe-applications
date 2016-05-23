@@ -37,7 +37,7 @@ options = [
 def gen_app(sleep_duration):
     app = {
         'name': APP_NAME,
-        'version': 1,
+        'version': 2,
         'will_end': True,
         'priority': 512,
         'requires_binary': False,

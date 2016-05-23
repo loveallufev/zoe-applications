@@ -51,24 +51,22 @@ def gen_app(notebook_mem_limit, master_mem_limit, worker_mem_limit, worker_cores
             hdfs_network_id, hdfs_namenode):
     sp_master = spark_framework.spark_master_service(int(master_mem_limit), master_image)
     sp_master['networks'].append(hdfs_network_id)
-    sp_workers = spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
-    for w in sp_workers:
-        w['networks'].append(hdfs_network_id)
+    sp_worker = spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
     jupyter = spark_jupyter.spark_jupyter_notebook_service(int(notebook_mem_limit), int(worker_mem_limit), notebook_image)
     jupyter['networks'].append(hdfs_network_id)
     jupyter['environment'].append(['NAMENODE_HOST', hdfs_namenode])
 
     app = {
         'name': APP_NAME,
-        'version': 1,
+        'version': 2,
         'will_end': False,
         'priority': 512,
         'requires_binary': False,
         'services': [
             sp_master,
-            sp_workers[0],
+            sp_worker,
             jupyter,
-        ] + sp_workers[1:]
+        ]
     }
     return app
 

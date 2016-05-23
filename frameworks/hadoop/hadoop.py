@@ -37,7 +37,10 @@ def hadoop_namenode_service(image):
         'volumes': [],
         'environment': [
             ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
-        ]
+        ],
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 0
     }
     return service
 
@@ -48,22 +51,22 @@ def hadoop_datanode_service(count, image):
     :type image: str
     :rtype: List(dict)
     """
-    ret = []
-    for i in range(count):
-        service = {
-            'name': "datanode{}".format(i),
-            'docker_image': image,
-            'monitor': False,
-            'required_resources': {"memory": 1 * 1024 * 1024 * 1024},  # 1 GB
-            'ports': [],
-            'networks': [],
-            'volumes': [],
-            'environment': [
-                ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
-            ]
-        }
-        ret.append(service)
-    return ret
+    service = {
+        'name': "datanode{}".format(i),
+        'docker_image': image,
+        'monitor': False,
+        'required_resources': {"memory": 1 * 1024 * 1024 * 1024},  # 1 GB
+        'ports': [],
+        'networks': [],
+        'volumes': [],
+        'environment': [
+            ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
+        ],
+        'total_count': count,
+        'essential_count': count,
+        'startup_order': 1
+    }
+    return service
 
 
 def hadoop_client_service(image, namenode_address, user, command):
@@ -86,6 +89,9 @@ def hadoop_client_service(image, namenode_address, user, command):
         ],
         'networks': [],
         'volumes': [],
-        'command': command
+        'command': command,
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 0
     }
     return service

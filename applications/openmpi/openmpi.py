@@ -43,17 +43,15 @@ options = [
 def gen_app(mpirun_image, worker_image, commandline, worker_count, worker_memory):
     app = {
         'name': APP_NAME,
-        'version': 1,
+        'version': 2,
         'will_end': True,
         'priority': 512,
         'requires_binary': True,
-        'services': []
+        'services': [
+            openmpi_framework.openmpi_mpirun_service(commandline, mpirun_image, worker_memory),
+            openmpi_framework.openmpi_worker_service(worker_count, worker_image, worker_memory)
+        ]
     }
-    for i in range(worker_count):
-        proc = openmpi_framework.openmpi_worker_service(i, worker_image, worker_memory)
-        app['services'].append(proc)
-    proc = openmpi_framework.openmpi_mpirun_service(commandline, mpirun_image, worker_memory)
-    app['services'].append(proc)
     return app
 
 
@@ -67,4 +65,4 @@ if __name__ == "__main__":
 
     sys.stderr.write('### Copy and customize the following lines to the hostlist file passed to mpirun #####\n')
     for wc in range(options[3][1]):
-        sys.stderr.write('mpiworker{}-##Zoe execution name##-##zoe user name##-##zoe deployment name##-zoe:{}\n'.format(wc, options[4][1]))
+        sys.stderr.write('mpiworker-{}-##Zoe execution name##-##zoe user name##-##zoe deployment name##-zoe:{}\n'.format(wc, options[4][1]))

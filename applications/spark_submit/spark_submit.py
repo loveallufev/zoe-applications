@@ -48,14 +48,15 @@ def gen_app(master_mem_limit, worker_mem_limit, worker_cores,
             commandline):
     app = {
         'name': APP_NAME,
-        'version': 1,
+        'version': 2,
         'will_end': False,
         'priority': 512,
         'requires_binary': True,
         'services': [
             spark_framework.spark_master_service(int(master_mem_limit), master_image),
+            spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image),
             spark_framework.spark_submit_service(int(master_mem_limit), int(worker_mem_limit), submit_image, commandline)
-        ] + spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
+        ]
     }
     return app
 

@@ -25,36 +25,37 @@ import frameworks.hadoop.hadoop as hadoop_framework
 #################################
 
 APP_NAME = 'hdfs'
-DATANODE_COUNT = 3
-NAMENODE_IMAGE = 'zoerepo/hadoop-namenode'
-DATANODE_IMAGE = 'zoerepo/hadoop-datanode'
-DOCKER_REGISTRY = '192.168.45.252:5000'  # Set to None to use images from the Docker Hub
+
+options = [
+    ('datanode_count', 3, 'Number of datanodes'),
+    ('namenode_image', '192.168.45.252:5000/zoerepo/hadoop-namenode'),
+    ('datanode_image', '192.168.45.252:5000/zoerepo/hadoop-datanode')
+]
 
 #####################
 # END CUSTOMIZATION #
 #####################
 
 
-def hdfs_app(name,
-             datanode_count,
-             namenode_image, datanode_image):
+def gen_app(datanode_count,
+            namenode_image, datanode_image):
     app = {
-        'name': name,
-        'version': 1,
+        'name': APP_NAME,
+        'version': 2,
         'will_end': False,
         'priority': 512,
         'requires_binary': False,
         'services': [
             hadoop_framework.hadoop_namenode_service(namenode_image),
-        ] + hadoop_framework.hadoop_datanode_service(datanode_count, datanode_image)
+            hadoop_framework.hadoop_datanode_service(datanode_count, datanode_image),
+        ]
     }
     return app
 
 if __name__ == "__main__":
-    if DOCKER_REGISTRY is not None:
-        NAMENODE_IMAGE = DOCKER_REGISTRY + '/' + NAMENODE_IMAGE
-        DATANODE_IMAGE = DOCKER_REGISTRY + '/' + DATANODE_IMAGE
-
-    app_dict = hdfs_app(APP_NAME, DATANODE_COUNT, NAMENODE_IMAGE, DATANODE_IMAGE)
+    args = {}
+    for opt in options:
+        args[opt[0]] = opt[1]
+    app_dict = gen_app(**args)
     json.dump(app_dict, sys.stdout, sort_keys=True, indent=4)
     sys.stdout.write('\n')

@@ -37,7 +37,7 @@ DST_PATH = 'data'  # Copy destination inside the Zoe workspace
 def copier_app(app_name, src_volume_host_path, src_path, dst_path):
     app = {
         'name': app_name,
-        'version': 1,
+        'version': 2,
         'will_end': True,
         'priority': 512,
         'requires_binary': False,

@@ -52,7 +52,10 @@ def spark_jupyter_notebook_service(mem_limit, worker_mem_limit, image):
             ["HADOOP_USER_NAME", "{user_name}"],
             ["NB_USER", "{user_name}"]
         ],
-        'networks': []
+        'networks': [],
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 0
     }
     return service
 

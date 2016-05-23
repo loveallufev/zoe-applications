@@ -38,7 +38,10 @@ def jupyter_notebook_service(mem_limit, image):
         'environment': [
             ["NB_USER", "{user_name}"]
         ],
-        'networks': []
+        'networks': [],
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 0
     }
     return service
 

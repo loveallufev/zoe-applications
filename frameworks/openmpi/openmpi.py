@@ -14,21 +14,25 @@
 # limitations under the License.
 
 
-def openmpi_worker_service(counter, image, worker_memory):
+def openmpi_worker_service(count, image, worker_memory):
     """
-    :type counter: int
+    :type count: int
+    :type image: str
     :type worker_memory: int
     :rtype: dict
     """
     service = {
-        'name': "mpiworker{}".format(counter),
+        'name': "mpiworker",
         'docker_image': image,
         'monitor': False,
         'required_resources': {"memory": worker_memory},
         'ports': [],
         'environment': [],
         'volumes': [],
-        'command': ''
+        'command': '',
+        'total_count': count,
+        'essential_count': count,
+        'startup_order': 0
     }
     return service
 
@@ -36,6 +40,7 @@ def openmpi_worker_service(counter, image, worker_memory):
 def openmpi_mpirun_service(mpirun_commandline, image, worker_memory):
     """
     :type mpirun_commandline: str
+    :type image: str
     :type worker_memory: int
     :rtype: dict
     """
@@ -47,6 +52,9 @@ def openmpi_mpirun_service(mpirun_commandline, image, worker_memory):
         'ports': [],
         'environment': [],
         'volumes': [],
-        'command': mpirun_commandline
+        'command': mpirun_commandline,
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 1
     }
     return service
