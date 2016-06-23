@@ -27,11 +27,11 @@ import frameworks.hadoop.hadoop as hadoop_framework
 APP_NAME = 'hdfs-client'
 
 options = [
-    ('image', '192.168.45.252:5000/zoerepo/hadoop-client', 'Image name'),
-    ('namenode', 'hdfs-namenode.hdfs', 'Namenode hostname'),
+    ('image', '192.168.45.252:5000/zapps/hadoop-client', 'Image name'),
+    ('namenode', 'namenode_host', 'Namenode hostname'),
     ('user', 'root', 'User to run the command as'),
     ('command', 'hdfs dfs -ls /', 'HDFS command to run'),
-    ('hdfs_network_id', 'eeef9754c16790a29d5210c5d9ad8e66614ee8a6229b6dc6f779019d46cec792', 'HDFS docker network ID')
+    ('hdfs_network_id', '<some id>', 'HDFS docker network ID')
 ]
 
 #####################

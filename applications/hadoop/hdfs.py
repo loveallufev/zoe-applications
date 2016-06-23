@@ -28,8 +28,8 @@ APP_NAME = 'hdfs'
 
 options = [
     ('datanode_count', 3, 'Number of datanodes'),
-    ('namenode_image', '192.168.45.252:5000/zoerepo/hadoop-namenode'),
-    ('datanode_image', '192.168.45.252:5000/zoerepo/hadoop-datanode')
+    ('namenode_image', '192.168.45.252:5000/zapps/hadoop-namenode'),
+    ('datanode_image', '192.168.45.252:5000/zapps/hadoop-datanode')
 ]
 
 #####################
