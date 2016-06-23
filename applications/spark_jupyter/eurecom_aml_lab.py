@@ -36,8 +36,8 @@ options = [
     ('master_image', '192.168.45.252:5000/zoerepo/spark-master', 'Spark Master image'),
     ('worker_image', '192.168.45.252:5000/zoerepo/spark-worker', 'Spark Worker image'),
     ('notebook_image', '192.168.45.252:5000/zoerepo/spark-jupyter-notebook', 'Jupyter notebook image'),
-    ('hdfs_network_id', 'eeef9754c16790a29d5210c5d9ad8e66614ee8a6229b6dc6f779019d46cec792', 'Docker Swarm HDFS network ID'),
-    ('hdfs_namenode', 'hdfs-namenode.hdfs', 'Namenode hostname')
+    ('hdfs_network_id', '07e76e17d68117653d2147827a3a309d113eedc761fceecee750ffb6efa442e1', 'Docker Swarm HDFS network ID'),
+    ('hdfs_namenode', 'hdfs-namenode.zoe', 'Namenode hostname')
 ]
 
 #####################
