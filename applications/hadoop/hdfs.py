@@ -19,6 +19,7 @@ import sys
 import json
 sys.path.append('../..')
 import frameworks.hadoop.hadoop as hadoop_framework
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -39,18 +40,11 @@ options = [
 
 def gen_app(datanode_count,
             namenode_image, datanode_image):
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': False,
-        'priority': 512,
-        'requires_binary': False,
-        'services': [
-            hadoop_framework.hadoop_namenode_service(namenode_image),
-            hadoop_framework.hadoop_datanode_service(datanode_count, datanode_image),
-        ]
-    }
-    return app
+    services = [
+        hadoop_framework.hadoop_namenode_service(namenode_image),
+        hadoop_framework.hadoop_datanode_service(datanode_count, datanode_image),
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 if __name__ == "__main__":
     args = {}

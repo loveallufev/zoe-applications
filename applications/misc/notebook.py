@@ -19,6 +19,7 @@ import sys
 import json
 sys.path.append('../..')
 from frameworks.jupyter.jupyter import jupyter_notebook_service
+import applications.app_base
 
 APP_NAME = 'Jupyter notebook'
 
@@ -37,17 +38,10 @@ options = [
 
 
 def gen_app(image, mem_limit):
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': True,
-        'priority': 512,
-        'requires_binary': False,
-        'services': [
-            jupyter_notebook_service(int(mem_limit), image)
-        ]
-    }
-    return app
+    services = [
+        jupyter_notebook_service(int(mem_limit), image)
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 if __name__ == "__main__":
     args = {}

@@ -15,10 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import json
+import sys
 sys.path.append('../..')
+
 import frameworks.spark.spark as spark_framework
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -46,19 +48,12 @@ def gen_app(master_mem_limit, worker_mem_limit, worker_cores,
             worker_count,
             master_image, worker_image, submit_image,
             commandline):
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': False,
-        'priority': 512,
-        'requires_binary': True,
-        'services': [
-            spark_framework.spark_master_service(int(master_mem_limit), master_image),
-            spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image),
-            spark_framework.spark_submit_service(int(master_mem_limit), int(worker_mem_limit), submit_image, commandline)
-        ]
-    }
-    return app
+    services = [
+        spark_framework.spark_master_service(int(master_mem_limit), master_image),
+        spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image),
+        spark_framework.spark_submit_service(int(master_mem_limit), int(worker_mem_limit), submit_image, commandline)
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 if __name__ == "__main__":
     args = {}

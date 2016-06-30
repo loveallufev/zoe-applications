@@ -20,6 +20,7 @@ import json
 sys.path.append('../..')
 import frameworks.spark.spark as spark_framework
 import frameworks.spark.spark_jupyter as spark_jupyter
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -56,19 +57,12 @@ def gen_app(notebook_mem_limit, master_mem_limit, worker_mem_limit, worker_cores
     jupyter['networks'].append(hdfs_network_id)
     jupyter['environment'].append(['NAMENODE_HOST', hdfs_namenode])
 
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': False,
-        'priority': 512,
-        'requires_binary': False,
-        'services': [
-            sp_master,
-            sp_worker,
-            jupyter,
-        ]
-    }
-    return app
+    services = [
+        sp_master,
+        sp_worker,
+        jupyter
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 if __name__ == "__main__":
     args = {}

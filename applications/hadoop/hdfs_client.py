@@ -19,6 +19,7 @@ import sys
 import json
 sys.path.append('../..')
 import frameworks.hadoop.hadoop as hadoop_framework
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -42,17 +43,10 @@ options = [
 def gen_app(image, namenode, user, command, hdfs_network_id):
     hdfs_client = hadoop_framework.hadoop_client_service(image, namenode, user, command)
     hdfs_client['networks'].append(hdfs_network_id)
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': True,
-        'priority': 512,
-        'requires_binary': False,
-        'services': [
-            hdfs_client
-        ]
-    }
-    return app
+    services = [
+        hdfs_client
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 if __name__ == "__main__":
     args = {}

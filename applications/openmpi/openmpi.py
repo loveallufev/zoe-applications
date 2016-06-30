@@ -19,6 +19,7 @@ import sys
 import json
 sys.path.append('../..')
 import frameworks.openmpi.openmpi as openmpi_framework
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -41,18 +42,11 @@ options = [
 
 
 def gen_app(mpirun_image, worker_image, commandline, worker_count, worker_memory):
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': True,
-        'priority': 512,
-        'requires_binary': True,
-        'services': [
-            openmpi_framework.openmpi_mpirun_service(commandline, mpirun_image, worker_memory),
-            openmpi_framework.openmpi_worker_service(worker_count, worker_image, worker_memory)
-        ]
-    }
-    return app
+    services = [
+        openmpi_framework.openmpi_mpirun_service(commandline, mpirun_image, worker_memory),
+        openmpi_framework.openmpi_worker_service(worker_count, worker_image, worker_memory)
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 
 if __name__ == "__main__":

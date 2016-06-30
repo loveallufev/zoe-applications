@@ -19,6 +19,7 @@ import sys
 import json
 sys.path.append('../..')
 from frameworks.utils.utils import sleeper_service
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -35,17 +36,10 @@ options = [
 
 
 def gen_app(sleep_duration):
-    app = {
-        'name': APP_NAME,
-        'version': 2,
-        'will_end': True,
-        'priority': 512,
-        'requires_binary': False,
-        'services': [
-            sleeper_service(sleep_duration)
-        ]
-    }
-    return app
+    services = [
+        sleeper_service(sleep_duration)
+    ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services)
 
 if __name__ == "__main__":
     args = {}

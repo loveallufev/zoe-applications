@@ -19,6 +19,7 @@ import sys
 import json
 sys.path.append('../..')
 from frameworks.utils.utils import copier_service
+import applications.app_base
 
 #################################
 # Zoe Application customization #
@@ -35,17 +36,10 @@ DST_PATH = 'data'  # Copy destination inside the Zoe workspace
 
 
 def copier_app(app_name, src_volume_host_path, src_path, dst_path):
-    app = {
-        'name': app_name,
-        'version': 2,
-        'will_end': True,
-        'priority': 512,
-        'requires_binary': False,
-        'services': [
-            copier_service(src_volume_host_path, src_path, dst_path)
-        ]
-    }
-    return app
+    services = [
+        copier_service(src_volume_host_path, src_path, dst_path)
+    ]
+    return applications.app_base.fill_app_template(app_name, False, services)
 
 if __name__ == "__main__":
     app_dict = copier_app(APP_NAME, SRC_HOST_PATH, SRC_PATH, DST_PATH)
