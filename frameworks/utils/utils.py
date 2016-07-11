@@ -55,6 +55,9 @@ def sleeper_service(sleep_duration):
         'required_resources': {"memory": 1 * 1024 * 1024 * 1024},  # 1 GB
         'ports': [],
         'environment': [],
-        'command': 'sleep ' + str(sleep_duration)
+        'command': 'sleep ' + str(sleep_duration),
+        'total_count': 1,
+        'essential_count': 1,
+        'startup_order': 0
     }
     return service
