@@ -20,7 +20,7 @@ def memcached_service():
     """
     service = {
         'name': "memcached",
-        'docker_image': 'memcached',
+        'docker_image': 'memcached:alpine',
         'monitor': True,
         'required_resources': {"memory": 64 * 1024 * 1024},  # 64M
         'ports': [],
