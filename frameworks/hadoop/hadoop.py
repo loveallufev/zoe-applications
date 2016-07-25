@@ -36,7 +36,7 @@ def hadoop_namenode_service(image):
         'networks': [],
         'volumes': [],
         'environment': [
-            ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
+            ["NAMENODE_HOST", "dns_name#self:8020"]
         ],
         'total_count': 1,
         'essential_count': 1,
@@ -60,7 +60,7 @@ def hadoop_datanode_service(count, image):
         'networks': [],
         'volumes': [],
         'environment': [
-            ["NAMENODE_HOST", "namenode-{execution_name}-{user_name}-{deployment_name}-zoe:8020"]
+            ["NAMENODE_HOST", "dns_name@namenode0:8020"]
         ],
         'total_count': count,
         'essential_count': count,

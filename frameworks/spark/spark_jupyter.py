@@ -46,7 +46,7 @@ def spark_jupyter_notebook_service(mem_limit, worker_mem_limit, image):
             }
         ],
         'environment': [
-            ["SPARK_MASTER", "spark://spark-master-0-{execution_name}-{user_name}-{deployment_name}-zoe.{user_name}-{deployment_name}-zoe:7077"],
+            ["SPARK_MASTER", "spark://{dns_name#spark-master0}:7077"],
             ["SPARK_EXECUTOR_RAM", str(executor_ram)],
             ["SPARK_DRIVER_RAM", str(driver_ram)],
             ["HADOOP_USER_NAME", "{user_name}"],
