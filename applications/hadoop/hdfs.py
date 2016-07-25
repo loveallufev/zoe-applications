@@ -29,8 +29,8 @@ APP_NAME = 'hdfs'
 
 options = [
     ('datanode_count', 3, 'Number of datanodes'),
-    ('namenode_image', '192.168.45.252:5000/zapps/hadoop-namenode'),
-    ('datanode_image', '192.168.45.252:5000/zapps/hadoop-datanode')
+    ('namenode_image', 'docker-registry:5000/zapps/hadoop-namenode'),
+    ('datanode_image', 'docker-registry:5000/zapps/hadoop-datanode')
 ]
 
 #####################

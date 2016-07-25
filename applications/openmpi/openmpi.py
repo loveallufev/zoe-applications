@@ -29,8 +29,8 @@ APP_NAME = 'openmpi'
 
 options = [
     ('commandline', 'mpirun -hostfile hostlist MPI_Hello', 'mpirun commandline'),
-    ('mpirun_image', '192.168.45.252:5000/zoeapps/openmpi-ubuntu', 'Image for the mpirun process'),
-    ('worker_image', '192.168.45.252:5000/zoeapps/openmpi-ubuntu', 'Image for the worker processes'),
+    ('mpirun_image', 'docker-registry:5000/zoeapps/openmpi-ubuntu', 'Image for the mpirun process'),
+    ('worker_image', 'docker-registry:5000/zoeapps/openmpi-ubuntu', 'Image for the worker processes'),
     ('worker_count', 4, 'Number of worker processes'),
     ('cpu_per_worker', 1, 'CPU count per worker'),
     ('worker_memory', 1024 ** 3, 'Memory reservation for each worker')

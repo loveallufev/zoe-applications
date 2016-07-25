@@ -33,9 +33,9 @@ options = [
     ('worker_mem_limit', 12 * (1024**3), 'Spark Worker memory limit (bytes)'),
     ('worker_cores', 6, 'Cores used by each worker'),
     ('worker_count', 2, 'Number of workers'),
-    ('master_image', '192.168.45.252:5000/zoerepo/spark-master', 'Spark Master image'),
-    ('worker_image', '192.168.45.252:5000/zoerepo/spark-worker', 'Spark Worker image'),
-    ('submit_image', '192.168.45.252:5000/zoerepo/spark-submit', 'Spark Submit image'),
+    ('master_image', 'docker-registry:5000/zoerepo/spark-master', 'Spark Master image'),
+    ('worker_image', 'docker-registry:5000/zoerepo/spark-worker', 'Spark Worker image'),
+    ('submit_image', 'docker-registry:5000/zoerepo/spark-submit', 'Spark Submit image'),
     ('commandline', 'wordcount.py hdfs://192.168.45.157/datasets/gutenberg_big_2x.txt hdfs://192.168.45.157/tmp/cntwdc1', 'Spark submit command line')
 ]
 

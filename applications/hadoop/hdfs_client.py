@@ -28,7 +28,7 @@ import applications.app_base
 APP_NAME = 'hdfs-client'
 
 options = [
-    ('image', '192.168.45.252:5000/zapps/hadoop-client', 'Image name'),
+    ('image', 'docker-registry:5000/zapps/hadoop-client', 'Image name'),
     ('namenode', 'namenode_host', 'Namenode hostname'),
     ('user', 'root', 'User to run the command as'),
     ('command', 'hdfs dfs -ls /', 'HDFS command to run'),

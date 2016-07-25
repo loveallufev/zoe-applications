@@ -28,7 +28,7 @@ APP_NAME = 'Jupyter notebook'
 #################################
 
 options = [
-    ('image', '192.168.45.252:5000/apps/jupyter-notebook', 'Docker image'),
+    ('image', 'docker-registry:5000/apps/jupyter-notebook', 'Docker image'),
     ('mem_limit', 4 * (1024 ** 3), 'Memory reservation (bytes)')
 ]
 
