@@ -29,8 +29,9 @@ import applications.app_base
 APP_NAME = 'spark-submit'
 
 options = [
+    ('client_mem_limit', 4 * (1024**3), 'Spark client memory limit (bytes)'),
     ('master_mem_limit', 512 * (1024**2), 'Spark Master memory limit (bytes)'),
-    ('worker_mem_limit', 12 * (1024**3), 'Spark Worker memory limit (bytes)'),
+    ('worker_mem_limit', 10 * (1024**3), 'Spark Worker memory limit (bytes)'),
     ('worker_cores', 6, 'Cores used by each worker'),
     ('worker_count', 2, 'Number of workers'),
     ('master_image', 'docker-registry:5000/zoerepo/spark-master', 'Spark Master image'),
@@ -44,14 +45,14 @@ options = [
 #####################
 
 
-def gen_app(master_mem_limit, worker_mem_limit, worker_cores,
+def gen_app(client_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
             worker_count,
             master_image, worker_image, submit_image,
             commandline):
     services = [
         spark_framework.spark_master_service(int(master_mem_limit), master_image),
         spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image),
-        spark_framework.spark_submit_service(int(master_mem_limit), int(worker_mem_limit), submit_image, commandline)
+        spark_framework.spark_submit_service(int(client_mem_limit), int(worker_mem_limit), submit_image, commandline)
     ]
     return applications.app_base.fill_app_template(APP_NAME, False, services)
 
