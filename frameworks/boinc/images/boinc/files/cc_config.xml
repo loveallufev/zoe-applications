@@ -1,0 +1,12 @@
+<cc_config>
+  <log_flags>
+    <task>1</task>
+    <file_xfer>1</file_xfer>
+    <sched_ops>1</sched_ops>
+    <cpu_sched>1</cpu_sched>
+  </log_flags>
+  <options>
+      <ncpus>1</ncpus>
+      <report_results_immediately>1</report_results_immediately>
+  </options>
+</cc_config>

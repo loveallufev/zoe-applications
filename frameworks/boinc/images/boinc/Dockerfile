@@ -4,13 +4,11 @@ MAINTAINER Daniele Venzano <venza@brownhat.org>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update \
-    && apt-get install \
-         --yes \
-         --no-install-recommends \
-         --no-install-suggests \
-         boinc-client \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install --yes --no-install-recommends --no-install-suggests boinc && apt-get clean && rm -Rf /var/lib/apt/lists/*
 
-CMD ["/usr/bin/boinc", "--attach_project", ${PROJECT_URL}, ${PROJECT_KEY}]
+RUN mkdir /data
+WORKDIR /data
+
+COPY files/cc_config.xml /data
+
+CMD /usr/bin/boinc --abort_jobs_on_exit --exit_when_idle --fetch_minimal_work --attach_project ${PROJECT_URL} ${PROJECT_KEY}
