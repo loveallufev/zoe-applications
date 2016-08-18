@@ -8,5 +8,6 @@
   <options>
       <ncpus>1</ncpus>
       <report_results_immediately>1</report_results_immediately>
+      <no_priority_change>1</no_priority_change>
   </options>
 </cc_config>
