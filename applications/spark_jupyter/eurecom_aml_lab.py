@@ -37,7 +37,6 @@ options = [
     ('master_image', 'docker-registry:5000/zoerepo/spark-master', 'Spark Master image'),
     ('worker_image', 'docker-registry:5000/zoerepo/spark-worker', 'Spark Worker image'),
     ('notebook_image', 'docker-registry:5000/zoerepo/spark-jupyter-notebook', 'Jupyter notebook image'),
-    ('hdfs_network_id', '07e76e17d68117653d2147827a3a309d113eedc761fceecee750ffb6efa442e1', 'Docker Swarm HDFS network ID'),
     ('hdfs_namenode', 'hdfs-namenode.zoe', 'Namenode hostname')
 ]
 
@@ -49,12 +48,10 @@ options = [
 def gen_app(notebook_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
             worker_count,
             master_image, worker_image, notebook_image,
-            hdfs_network_id, hdfs_namenode):
+            hdfs_namenode):
     sp_master = spark_framework.spark_master_service(int(master_mem_limit), master_image)
-    sp_master['networks'].append(hdfs_network_id)
     sp_worker = spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
     jupyter = spark_jupyter.spark_jupyter_notebook_service(int(notebook_mem_limit), int(worker_mem_limit), notebook_image)
-    jupyter['networks'].append(hdfs_network_id)
     jupyter['environment'].append(['NAMENODE_HOST', hdfs_namenode])
 
     services = [
