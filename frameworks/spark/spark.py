@@ -99,6 +99,7 @@ def spark_submit_service(mem_limit, worker_mem_limit, image, command):
     :rtype: dict
     """
     executor_ram = worker_mem_limit - (2 * 1024 ** 3)
+    driver_ram = mem_limit - (1 * 1024 ** 3)
     service = {
         'name': "spark-submit",
         'docker_image': image,
@@ -116,7 +117,8 @@ def spark_submit_service(mem_limit, worker_mem_limit, image, command):
         'environment': [
             ["SPARK_MASTER_IP", "{dns_name#spark-master0}"],
             ["SPARK_EXECUTOR_RAM", str(executor_ram)],
-            ["HADOOP_USER_NAME", "{user_name}"]
+            ["HADOOP_USER_NAME", "{user_name}"],
+            ["SPARK_DRIVER_RAM", str(driver_ram)]
         ],
         'command': command,
         'total_count': 1,
