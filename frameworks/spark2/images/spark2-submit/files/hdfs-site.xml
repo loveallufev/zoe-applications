@@ -18,8 +18,12 @@
 
 <configuration>
 <property>
-       <name>fs.defaultFS</name>
-       <value>hdfs://XXX_NAMENODE_HOST:8020/</value>
+       <name>dfs.namenode.name.dir</name>
+       <value>file:///mnt/namenode</value>
+</property>
+<property>
+       <name>dfs.datanode.data.dir</name>
+       <value>file:///mnt/datanode</value>
 </property>
 </configuration>
 
