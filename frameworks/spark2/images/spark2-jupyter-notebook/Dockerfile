@@ -25,35 +25,17 @@ ENV SPARK_HOME /opt/spark
 ENV PATH /opt/spark/bin:/opt/spark/sbin:${PATH}
 
 RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
-    git \
-    vim \
     wget \
     build-essential \
     python-dev \
     ca-certificates \
     bzip2 \
-    unzip \
-    libsm6 \
     pandoc \
-    texlive-latex-base \
-    texlive-latex-extra \
-    texlive-fonts-extra \
-    texlive-fonts-recommended \
-    texlive-generic-recommended \
-    sudo \
-    locales \
-    libxrender1 \
     libopenblas-dev \
     libjpeg-dev \
     && apt-get clean
 
 RUN locale-gen en_US.UTF-8
-
-# Install Tini
-RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.6.0/tini && \
-    echo "d5ed732199c36a1189320e6c4859f0169e950692f451c03e7854243b95f4234b *tini" | sha256sum -c - && \
-    mv tini /usr/local/bin/tini && \
-    chmod +x /usr/local/bin/tini
 
 # Configure environment
 ENV CONDA_DIR /opt/conda
@@ -65,31 +47,17 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.3-src.zip
-ENV HADOOP_VERSION 2.6.1
+ENV PYSPARK_PYTHON=/opt/conda/bin/python
 
-# Setup nbuser home directory
-RUN ln -s /mnt/workspace /root/work && \
-    mkdir /root/.jupyter && \
-    mkdir /root/.local
-
-# Install conda as nbuser
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
-    wget http://repo.continuum.io/miniconda/Miniconda3-3.9.1-Linux-x86_64.sh && \
-    echo "6c6b44acdd0bc4229377ee10d52c8ac6160c336d9cdd669db7371aa9344e1ac3 *Miniconda3-3.9.1-Linux-x86_64.sh" | sha256sum -c - && \
-    /bin/bash Miniconda3-3.9.1-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-3.9.1-Linux-x86_64.sh && \
-    $CONDA_DIR/bin/conda install --yes conda==3.14.1
-
-# Install Jupyter notebook as nbuser
-RUN conda install --yes \
-    'notebook=4.1*' \
-    terminado \
-    && conda clean -yt
+    wget http://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-4.2.12-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-4.2.12-Linux-x86_64.sh && \
+    $CONDA_DIR/bin/conda install --yes conda==4.2.12
 
 # Install Python 3 packages
 RUN conda install --yes \
-    'ipywidgets=4.0*' \
     'pandas=0.17*' \
     'matplotlib=1.4*' \
     'scipy=0.16*' \
@@ -100,16 +68,54 @@ RUN conda install --yes \
     'basemap' \
     && conda clean -yt
 
-RUN curl http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz | tar -xz -C /opt/
-
-RUN ln -s /opt/hadoop-${HADOOP_VERSION} /opt/hadoop
-
-RUN /opt/conda/bin/pip install thunder-python showit
-
 # Add Spark JARs
 RUN curl http://central.maven.org/maven2/com/databricks/spark-csv_2.10/1.3.0/spark-csv_2.10-1.3.0.jar -o /opt/spark/com.databricks_spark-csv_2.10-1.3.0.jar
 RUN curl http://central.maven.org/maven2/org/apache/commons/commons-csv/1.2/commons-csv-1.2.jar -o /opt/spark/org.apache.commons_commons-csv-1.2.jar
 RUN curl http://central.maven.org/maven2/com/univocity/univocity-parsers/1.5.6/univocity-parsers-1.5.6.jar -o /opt/spark/com.univocity_univocity-parsers-1.5.6.jar
+
+ENV HADOOP_VERSION_DL 2.6.1
+RUN curl http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION_DL}.tar.gz | tar -xz -C /opt/
+
+RUN ln -s /opt/hadoop-${HADOOP_VERSION_DL} /opt/hadoop
+
+# Install Tini
+RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.6.0/tini && \
+    echo "d5ed732199c36a1189320e6c4859f0169e950692f451c03e7854243b95f4234b *tini" | sha256sum -c - && \
+    mv tini /usr/local/bin/tini && \
+    chmod +x /usr/local/bin/tini
+
+RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
+    git \
+    vim \
+    unzip \
+    libsm6 \
+    texlive-latex-base \
+    texlive-latex-extra \
+    texlive-fonts-extra \
+    texlive-fonts-recommended \
+    texlive-generic-recommended \
+    sudo \
+    locales \
+    libxrender1 \
+    && apt-get clean
+
+# Setup nbuser home directory
+RUN ln -s /mnt/workspace /root/work && \
+    mkdir /root/.jupyter && \
+    mkdir /root/.local
+
+# Install Jupyter notebook as nbuser
+RUN conda install --yes \
+    'notebook=4.1*' \
+    terminado \
+    && conda clean -yt
+
+# Install Python 3 packages
+RUN conda install --yes \
+    'ipywidgets=4.0*' \
+    && conda clean -yt
+
+RUN /opt/conda/bin/pip install thunder-python showit
 
 COPY files/spark-defaults.conf /opt/spark-defaults.conf
 

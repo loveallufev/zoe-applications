@@ -16,7 +16,7 @@ ENV HADOOP_VERSION ${HADOOP_VERSION:-hadoop2.6}
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-oracle/
 
-RUN curl -s http://mirrors.ircam.fr/pub/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-${HADOOP_VERSION}.tgz | tar -xz -C /opt/
+RUN curl -s http://mirrors.ircam.fr/pub/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-${HADOOP_VERSION}.tgz | tar -xvz -C /opt/
 
 WORKDIR /opt
 
@@ -24,30 +24,37 @@ RUN ln -s spark-${SPARK_VERSION}-bin-${HADOOP_VERSION} spark
 ENV SPARK_HOME /opt/spark
 ENV PATH /opt/spark/bin:/opt/spark/sbin:${PATH}
 
-COPY files/* /opt/
-RUN chmod +x /opt/*.sh
-EXPOSE 8888 8081
+RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
+    wget \
+    build-essential \
+    python-dev \
+    ca-certificates \
+    bzip2 \
+    pandoc \
+    libopenblas-dev \
+    libjpeg-dev \
+    && apt-get clean
 
-ENV SPARK_WORKER_PORT 8888
-ENV SPARK_WORKER_WEBUI_PORT 8081
+RUN locale-gen en_US.UTF-8
 
 # Configure environment
 ENV CONDA_DIR /opt/conda
-ENV PATH $CONDA_DIR/bin:$PATH
+ENV HADOOP_HOME /opt/hadoop
+ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
+ENV PATH $HADOOP_HOME/bin:$CONDA_DIR/bin:$PATH
+ENV SHELL /bin/bash
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.3-src.zip
 ENV PYSPARK_PYTHON=/opt/conda/bin/python
 
-# Install conda
 RUN cd /tmp && \
     mkdir -p $CONDA_DIR && \
-    wget http://repo.continuum.io/miniconda/Miniconda3-3.9.1-Linux-x86_64.sh && \
-    echo "6c6b44acdd0bc4229377ee10d52c8ac6160c336d9cdd669db7371aa9344e1ac3 *Miniconda3-3.9.1-Linux-x86_64.sh" | sha256sum -c - && \
-    /bin/bash Miniconda3-3.9.1-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
-    rm Miniconda3-3.9.1-Linux-x86_64.sh && \
-    $CONDA_DIR/bin/conda install --yes conda==3.14.1
+    wget http://repo.continuum.io/miniconda/Miniconda3-4.2.12-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-4.2.12-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-4.2.12-Linux-x86_64.sh && \
+    $CONDA_DIR/bin/conda install --yes conda==4.2.12
 
 # Install Python 3 packages
 RUN conda install --yes \
@@ -57,6 +64,16 @@ RUN conda install --yes \
     'seaborn=0.6*' \
     'scikit-learn=0.16*' \
     'statsmodels=0.6.1' \
+    'pillow' \
+    'basemap' \
     && conda clean -yt
+
+COPY files/* /opt/
+RUN chmod +x /opt/*.sh
+EXPOSE 8888 8081
+
+ENV SPARK_WORKER_PORT 8888
+ENV SPARK_WORKER_WEBUI_PORT 8081
+
 
 CMD /opt/start-worker.sh
