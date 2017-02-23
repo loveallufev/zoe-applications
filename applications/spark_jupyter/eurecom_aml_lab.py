@@ -34,9 +34,9 @@ options = [
     ('notebook_mem_limit', 12 * (1024**3), 'Notebook memory limit (bytes)'),
     ('worker_cores', 6, 'Cores used by each worker'),
     ('worker_count', 2, 'Number of workers'),
-    ('master_image', 'docker-registry:5000/zoerepo/spark-master', 'Spark Master image'),
-    ('worker_image', 'docker-registry:5000/zoerepo/spark-worker', 'Spark Worker image'),
-    ('notebook_image', 'docker-registry:5000/zoerepo/spark-jupyter-notebook', 'Jupyter notebook image'),
+    ('master_image', 'docker-registry:5000/zapps/spark2-master', 'Spark Master image'),
+    ('worker_image', 'docker-registry:5000/zapps/spark2-worker', 'Spark Worker image'),
+    ('notebook_image', 'docker-registry:5000/zapps/spark2-jupyter-notebook', 'Jupyter notebook image'),
     ('hdfs_namenode', 'hdfs-namenode.zoe', 'Namenode hostname')
 ]
 

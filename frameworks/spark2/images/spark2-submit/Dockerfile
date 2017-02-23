@@ -9,7 +9,7 @@ RUN /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin
 RUN apt-get update && apt-get -y install oracle-java7-installer oracle-java7-set-default curl
 
 ARG SPARK_VERSION
-ENV SPARK_VERSION ${SPARK_VERSION:-2.0.2}
+ENV SPARK_VERSION ${SPARK_VERSION:-2.1.0}
 
 ARG HADOOP_VERSION
 ENV HADOOP_VERSION ${HADOOP_VERSION:-hadoop2.6}
@@ -46,7 +46,7 @@ ENV SHELL /bin/bash
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
-ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.3-src.zip
+ENV PYTHONPATH $SPARK_HOME/python:$SPARK_HOME/python/lib/py4j-0.10.4-src.zip
 ENV PYSPARK_PYTHON=/opt/conda/bin/python
 
 RUN cd /tmp && \
@@ -73,7 +73,7 @@ RUN curl http://central.maven.org/maven2/com/databricks/spark-csv_2.10/1.3.0/spa
 RUN curl http://central.maven.org/maven2/org/apache/commons/commons-csv/1.2/commons-csv-1.2.jar -o /opt/spark/org.apache.commons_commons-csv-1.2.jar
 RUN curl http://central.maven.org/maven2/com/univocity/univocity-parsers/1.5.6/univocity-parsers-1.5.6.jar -o /opt/spark/com.univocity_univocity-parsers-1.5.6.jar
 
-ENV HADOOP_VERSION_DL 2.6.1
+ENV HADOOP_VERSION_DL 2.6.5
 RUN curl http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION_DL}/hadoop-${HADOOP_VERSION_DL}.tar.gz | tar -xz -C /opt/
 
 RUN ln -s /opt/hadoop-${HADOOP_VERSION_DL} /opt/hadoop

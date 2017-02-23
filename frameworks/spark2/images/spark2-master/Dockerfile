@@ -9,7 +9,7 @@ RUN /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin
 RUN apt-get update && apt-get -y install oracle-java7-installer oracle-java7-set-default curl
 
 ARG SPARK_VERSION
-ENV SPARK_VERSION ${SPARK_VERSION:-2.0.2}
+ENV SPARK_VERSION ${SPARK_VERSION:-2.1.0}
 
 ARG HADOOP_VERSION
 ENV HADOOP_VERSION ${HADOOP_VERSION:-hadoop2.6}

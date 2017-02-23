@@ -31,12 +31,14 @@ def spark_master_service(mem_limit, image):
                 'protocol': "http",
                 'port_number': 8080,
                 'path': "/",
-                'is_main_endpoint': False
+                'is_main_endpoint': True,
+                'expose': True
             }
         ],
         'environment': [
             ["SPARK_MASTER_IP", "{dns_name#self}"],
-            ["HADOOP_USER_NAME", "{user_name}"]
+            ["HADOOP_USER_NAME", "{user_name}"],
+            ["PYTHONHASHSEED", "42"],
         ],
         'networks': [],
         'total_count': 1,
@@ -80,6 +82,7 @@ def spark_worker_service(count, mem_limit, cores, image):
             ["SPARK_WORKER_RAM", str(worker_ram)],
             ["SPARK_MASTER_IP", "{dns_name#spark-master0}"],
             ["SPARK_LOCAL_IP", "{dns_name#self}"],
+            ["PYTHONHASHSEED", "42"],
             ["HADOOP_USER_NAME", "{user_name}"]
         ],
         'networks': [],
@@ -118,6 +121,7 @@ def spark_submit_service(mem_limit, worker_mem_limit, image, command):
             ["SPARK_MASTER_IP", "{dns_name#spark-master0}"],
             ["SPARK_EXECUTOR_RAM", str(executor_ram)],
             ["HADOOP_USER_NAME", "{user_name}"],
+            ["PYTHONHASHSEED", "42"],
             ["SPARK_DRIVER_RAM", str(driver_ram)]
         ],
         'command': command,
