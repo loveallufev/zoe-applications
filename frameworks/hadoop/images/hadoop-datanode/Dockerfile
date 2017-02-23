@@ -9,7 +9,7 @@ RUN apt-get update && apt-get -y install oracle-java7-installer oracle-java7-set
 
 WORKDIR /opt
 
-ENV HADOOP_VERSION 2.6.4
+ENV HADOOP_VERSION 2.6.5
 RUN curl -s http://apache.mirrors.ovh.net/ftp.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz | tar -xz -C /opt/
 
 RUN ln -s hadoop-${HADOOP_VERSION} hadoop
