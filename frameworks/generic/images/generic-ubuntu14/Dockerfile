@@ -178,7 +178,10 @@ ENV LANGUAGE en_US.UTF-8
 
 # Configure container startup as root
 EXPOSE 6006
+
+VOLUME /mnt/workspace
 WORKDIR /mnt/workspace
+
 ENV WS_DIR /mnt/workspace
 COPY files/start-tf.sh /usr/local/bin/
 CMD ["/usr/local/bin/start-tf.sh"]
