@@ -18,7 +18,7 @@
 ZOE_APPLICATION_DESCRIPTION_VERSION = 2
 
 
-def fill_app_template(name, will_end, service_list):
+def fill_app_template(name, will_end, service_list, disable_autorestart=False):
     if not isinstance(name, str):
         raise TypeError('name must be a string')
     if not isinstance(will_end, bool):
@@ -31,6 +31,7 @@ def fill_app_template(name, will_end, service_list):
         'will_end': will_end,
         'priority': 512,
         'requires_binary': True,
-        'services': service_list
+        'services': service_list,
+        'disable_autorestart': disable_autorestart
     }
     return app

@@ -28,15 +28,21 @@ import applications.app_base
 
 APP_NAME = 'spark-submit'
 
+NUM_WORKERS = 16
+NUM_CORE_PER_WORKER = 1
+
+GBs = 1024**3
+
 options = [
-    ('client_mem_limit', 4 * (1024**3), 'Spark client memory limit (bytes)'),
-    ('master_mem_limit', 512 * (1024**2), 'Spark Master memory limit (bytes)'),
-    ('worker_mem_limit', 10 * (1024**3), 'Spark Worker memory limit (bytes)'),
-    ('worker_cores', 6, 'Cores used by each worker'),
-    ('worker_count', 2, 'Number of workers'),
-    ('master_image', 'docker-registry:5000/zoerepo/spark-master', 'Spark Master image'),
-    ('worker_image', 'docker-registry:5000/zoerepo/spark-worker', 'Spark Worker image'),
-    ('submit_image', 'docker-registry:5000/zoerepo/spark-submit', 'Spark Submit image'),
+    ('client_mem_limit', 3 * GBs, 'Spark client memory limit (bytes)'),
+    ('master_mem_limit', 8 * GBs, 'Spark Master memory limit (bytes)'),
+    ('worker_mem_limit', 8 * GBs, 'Spark Worker memory limit (bytes)'),
+    ('worker_cores', NUM_CORE_PER_WORKER, 'Cores used by each worker'),
+    ('worker_count', NUM_WORKERS, 'Number of workers'),
+    ('master_image', 'docker-registry:5000/zapps/spark2-master', 'Spark Master image'),
+    ('worker_image', 'docker-registry:5000/zapps/spark2-worker', 'Spark Worker image'),
+    ('submit_image', 'docker-registry:5000/zapps/spark2-submit', 'Spark Submit image'),
+    ('namenode_host', '10.0.0.15', 'Address of the Namenode'),
     ('commandline', 'wordcount.py hdfs://192.168.45.157/datasets/gutenberg_big_2x.txt hdfs://192.168.45.157/tmp/cntwdc1', 'Spark submit command line')
 ]
 
@@ -48,13 +54,27 @@ options = [
 def gen_app(client_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
             worker_count,
             master_image, worker_image, submit_image,
-            commandline):
+            commandline, namenode_host, 
+            expose_submit_service=False,
+            monitor_submit_service=True,
+            monitor_master_service=False,
+            disable_autorestart=False):
+    submit_service = spark_framework.spark_submit_service(int(client_mem_limit), int(worker_mem_limit), submit_image, commandline)
+    submit_service['environment'].append(['NAMENODE_HOST', namenode_host])
+    submit_service['ports'][0]['expose'] = expose_submit_service
+    submit_service['monitor'] = monitor_submit_service
+
+    master_service = spark_framework.spark_master_service(int(master_mem_limit), master_image)
+    master_service['ports'][0]['expose'] = True
+    master_service['monitor'] = monitor_master_service
+
+    workers_service = spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
     services = [
-        spark_framework.spark_master_service(int(master_mem_limit), master_image),
-        spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image),
-        spark_framework.spark_submit_service(int(client_mem_limit), int(worker_mem_limit), submit_image, commandline)
-    ]
-    return applications.app_base.fill_app_template(APP_NAME, False, services)
+         master_service,
+         workers_service,
+         submit_service
+             ]
+    return applications.app_base.fill_app_template(APP_NAME, False, services, disable_autorestart)
 
 if __name__ == "__main__":
     args = {}
