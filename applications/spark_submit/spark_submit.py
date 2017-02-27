@@ -68,8 +68,8 @@ def gen_app(client_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
     master_service['ports'][0]['expose'] = True
     master_service['monitor'] = monitor_master_service
     master_service['ports'].append({
-        "expose": true,
-        "is_main_endpoint": false,
+        "expose": True,
+        "is_main_endpoint": False,
         "name": "Spark history server",
         "path": "/",
         "port_number": 18080,
