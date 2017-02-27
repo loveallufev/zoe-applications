@@ -1,11 +1,13 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
+#FROM debian:testing
 
 MAINTAINER Daniele Venzano <venza@brownhat.org>
+
+ENV DEBIAN_FRONTEND noninteractive
 
 ######################################################
 # This image is configured to support running:
 #    - python scripts (version 2 & 3)
-#    - tensorflow applications
 #    - java applications (JDK8)
 #    - bash scripts
 #    - R scripts
@@ -17,8 +19,10 @@ MAINTAINER Daniele Venzano <venza@brownhat.org>
 ######################################################
 
 # Dependencies for installing Python
-sudo apt-get install -y --force-yes --no-install-recommends build-essential
-sudo apt-get install -y --force-yes --no-install-recommends \
+RUN apt-get update
+
+RUN apt-get install -y --force-yes --no-install-recommends build-essential
+RUN apt-get install -y --force-yes --no-install-recommends \
     libreadline-gplv2-dev \
     libncursesw5-dev \
     libssl-dev \
@@ -27,7 +31,6 @@ sudo apt-get install -y --force-yes --no-install-recommends \
     libgdbm-dev \
     libc6-dev \
     libbz2-dev \
-    python-pip \
     python-dev \
     software-properties-common \
     curl \
@@ -38,76 +41,42 @@ sudo apt-get install -y --force-yes --no-install-recommends \
     unzip \
     swig \
     git \
+    wget \
+    python-pip \
     python-numpy \
     swig \
     python-wheel \
     && apt-get clean
 
 
-# Download Python 2.7.9 and extract
-mkdir $HOME/Downloads
-cd $HOME/Downloads
-wget https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz
-tar -xvf Python-2.7.9.tgz
-
-# Install Python 2.7.9
-cd $HOME/Downloads/Python-2.7.9
-./configure
-make
-sudo make install
-
-# Download python 3.4.3 and extract
-cd $HOME/Downloads
-wget https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz
-tar -xvf Python-3.4.3.tgz
-
-# Install Python 3.4.3
-cd $HOME/Downloads/Python-3.4.3
-./configure
-make
-sudo make altinstall
-
-#RUN python -m pip install --upgrade pip
-wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python2.7
-sudo easy_install-2.7 pip
-
-wget https://bootstrap.pypa.io/ez_setup.py -O - | sudo python3.4
-sudo easy_install-3.4 pip
-
+RUN apt-get install python
+RUN python -m pip install --upgrade pip
+RUN apt-get install -y python-matplotlib
 
 ##################################################
 #                 JAVA 8
 ##################################################
-RUN add-apt-repository ppa:webupd8team/java -y
-RUN /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
-RUN apt-get update && apt-get install -y oracle-java8-installer
 
-##################################################
-#               TENSORFLOW
-##################################################
-# From binaries
-ENV TF_BINARY_URL=export TF_BINARY_URL=https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.12.1-cp27-none-linux_x86_64.whl
-RUN pip install --upgrade $TF_BINARY_URL
-RUN apt-get install -y python-matplotlib
+RUN apt update
+RUN rm -f /etc/apt/sources.list.d/webupd8team-java.list
+RUN add-apt-repository ppa:webupd8team/java
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
 
-##################################################
-#                  GPy
-##################################################
-RUN pip install --upgrade GPy paramz
 
-##################################################
-#                 GPFlow
-##################################################
-WORKDIR /opt
-RUN git clone https://github.com/GPflow/GPflow.git
-WORKDIR /opt/GPflow
-RUN python setup.py install
+RUN apt update; apt install -y --force-yes --no-install-recommends --allow-unauthenticated oracle-java8-installer
+RUN apt install -y --allow-unauthenticated oracle-java8-set-default
 
 #################################################
 #        R
 #################################################
 
 ## Emacs, make this -*- mode: sh; -*-
+
+
+#RUN /bin/bash -c "gpg --keyserver pgpkeys.mit.edu --recv-key  010908312D230C5F"
+#RUN /bin/bash -c "gpg -a --export 010908312D230C5F | sudo apt-key add -"
+RUN apt-get update
 
 ## This handle reaches Carl and Dirk
 # MAINTAINER "Carl Boettiger and Dirk Eddelbuettel" rocker-maintainers@eddelbuettel.com
@@ -145,7 +114,7 @@ ENV R_BASE_VERSION 3.3.2
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 ## Also set a default CRAN repo, and make sure littler knows about it too
 RUN apt-get update \
-	&& apt-get install -t unstable -y --no-install-recommends \
+	&& apt-get install -t unstable -y --allow-unauthenticated --no-install-recommends \
 		littler \
                 r-cran-littler \
 		r-base=${R_BASE_VERSION}* \
@@ -183,9 +152,9 @@ VOLUME /mnt/workspace
 WORKDIR /mnt/workspace
 
 ENV WS_DIR /mnt/workspace
-COPY files/start-tf.sh /usr/local/bin/
-CMD ["/usr/local/bin/start-tf.sh"]
-RUN chmod 755 /usr/local/bin/start-tf.sh
+#COPY files/start-tf.sh /usr/local/bin/
+#CMD ["/usr/local/bin/start-tf.sh"]
+#RUN chmod 755 /usr/local/bin/start-tf.sh
 
 ENTRYPOINT ["/bin/bash"]
 
