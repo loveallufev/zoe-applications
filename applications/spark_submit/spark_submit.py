@@ -34,8 +34,8 @@ NUM_CORE_PER_WORKER = 1
 GBs = 1024**3
 
 options = [
-    ('client_mem_limit', 3 * GBs, 'Spark client memory limit (bytes)'),
-    ('master_mem_limit', 8 * GBs, 'Spark Master memory limit (bytes)'),
+    ('client_mem_limit', 1 * GBs, 'Spark client memory limit (bytes)'),
+    ('master_mem_limit', 2 * GBs, 'Spark Master memory limit (bytes)'),
     ('worker_mem_limit', 8 * GBs, 'Spark Worker memory limit (bytes)'),
     ('worker_cores', NUM_CORE_PER_WORKER, 'Cores used by each worker'),
     ('worker_count', NUM_WORKERS, 'Number of workers'),
@@ -69,6 +69,7 @@ def gen_app(client_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
     master_service['monitor'] = monitor_master_service
 
     workers_service = spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
+    
     services = [
          master_service,
          workers_service,

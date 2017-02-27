@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-MAINTAINER Daniele Venzano <venza@brownhat.org>
+MAINTAINER Duc Trung NGUYEN <duc-trung.nguyen@eurecom.fr>
 
 RUN apt-get update && apt-get install -y --force-yes software-properties-common python-software-properties
 RUN apt-add-repository -y ppa:webupd8team/java
