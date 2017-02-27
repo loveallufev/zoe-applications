@@ -36,5 +36,5 @@ cat "${SPARK_HOME}/conf/spark-defaults.conf"
 
 echo 'Configuration done, starting Spark...'
 
-/opt/spark/bin/spark-submit --conf spark.eventLog.enabled=true --conf spark.eventLog.dir file:///tmp/ --master spark://${SPARK_MASTER_IP}:7077 --executor-memory=${SPARK_EXECUTOR_RAM} "$@"
+/opt/spark/bin/spark-submit --master spark://${SPARK_MASTER_IP}:7077 --executor-memory=${SPARK_EXECUTOR_RAM} "$@"
 
