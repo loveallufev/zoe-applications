@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 #FROM debian:testing
 
-MAINTAINER Daniele Venzano <venza@brownhat.org>
+MAINTAINER Duc Trung NGUYEN <duc-trung.nguyen@eurecom.fr>
 
 ENV DEBIAN_FRONTEND noninteractive
 
