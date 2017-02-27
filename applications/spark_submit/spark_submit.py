@@ -67,6 +67,14 @@ def gen_app(client_mem_limit, master_mem_limit, worker_mem_limit, worker_cores,
     master_service = spark_framework.spark_master_service(int(master_mem_limit), master_image)
     master_service['ports'][0]['expose'] = True
     master_service['monitor'] = monitor_master_service
+    master_service['ports'].append({
+        "expose": true,
+        "is_main_endpoint": false,
+        "name": "Spark history server",
+        "path": "/",
+        "port_number": 18080,
+        "protocol": "http"
+    })
 
     workers_service = spark_framework.spark_worker_service(int(worker_count), int(worker_mem_limit), int(worker_cores), worker_image)
     
