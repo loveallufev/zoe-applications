@@ -33,12 +33,14 @@ replace_or_add "spark.history.fs.logDirectory" "${full_log_dir}" "${SPARK_HOME}/
 mkdir -p ${log_dir}
 
 cd ${log_dir}
-chmod +r * # grant the read permission to all users for all files
+chmod 755 ${log_dir}
+#chmod +r * # grant the read permission to all users for all files
 
 cat "${SPARK_HOME}/conf/spark-defaults.conf"
 
-./sbin/start-history-server.sh &
+
+/opt/spark/sbin/start-history-server.sh &
 #sudo service spark-history-server start
 
-./bin/spark-class org.apache.spark.deploy.master.Master --host $SPARK_MASTER_IP --port $SPARK_MASTER_PORT --webui-port $SPARK_MASTER_WEBUI_PORT $@
+/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master --host $SPARK_MASTER_IP --port $SPARK_MASTER_PORT --webui-port $SPARK_MASTER_WEBUI_PORT $@
 
