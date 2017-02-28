@@ -25,9 +25,10 @@ function replace_or_add {
 }
 
 log_dir=/tmp/spark-events
+full_log_dir=file://${log_dir}
 replace_or_add "spark.eventLog.enabled" "true" "${SPARK_HOME}/conf/spark-defaults.conf"
-replace_or_add "spark.eventLog.dir" "${log_dir}"  "${SPARK_HOME}/conf/spark-defaults.conf"
-replace_or_add "spark.history.fs.logDirectory" "${log_dir}" "${SPARK_HOME}/conf/spark-defaults.conf"
+replace_or_add "spark.eventLog.dir" "${full_log_dir}"  "${SPARK_HOME}/conf/spark-defaults.conf"
+replace_or_add "spark.history.fs.logDirectory" "${full_log_dir}" "${SPARK_HOME}/conf/spark-defaults.conf"
 
 mkdir -p ${log_dir}
 
