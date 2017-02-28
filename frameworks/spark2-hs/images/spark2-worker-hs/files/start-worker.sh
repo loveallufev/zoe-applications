@@ -30,8 +30,9 @@ replace_or_add "spark.eventLog.dir" "${full_log_dir}"  "${SPARK_HOME}/conf/spark
 replace_or_add "spark.history.fs.logDirectory" "${full_log_dir}" "${SPARK_HOME}/conf/spark-defaults.conf"
 
 mkdir -p ${log_dir}
-cd ${log_dir}
-chmod +r * # grant the read permission to all users for all files
+#cd ${log_dir}
+#chmod 755 ${log_dir}
+#chmod +r * # grant the read permission to all users for all files
 
 /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker \
 	spark://${SPARK_MASTER_IP}:7077 --cores ${SPARK_WORKER_CORES:-4} --memory ${SPARK_WORKER_RAM:-4g} \

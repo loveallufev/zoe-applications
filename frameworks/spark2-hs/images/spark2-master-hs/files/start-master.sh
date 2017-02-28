@@ -32,8 +32,8 @@ replace_or_add "spark.history.fs.logDirectory" "${full_log_dir}" "${SPARK_HOME}/
 
 mkdir -p ${log_dir}
 
-cd ${log_dir}
-chmod 755 ${log_dir}
+#cd ${log_dir}
+#chmod 755 ${log_dir}
 #chmod +r * # grant the read permission to all users for all files
 
 cat "${SPARK_HOME}/conf/spark-defaults.conf"

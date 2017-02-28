@@ -32,13 +32,16 @@ replace_or_add "spark.eventLog.dir" "${full_log_dir}"  "${SPARK_HOME}/conf/spark
 replace_or_add "spark.history.fs.logDirectory" "${full_log_dir}" "${SPARK_HOME}/conf/spark-defaults.conf"
 
 mkdir -p ${log_dir}
-cd ${log_dir}
-chmod 755 ${log_dir}
-#chmod +r * # grant the read permission to all users for all files
 
 cat "${SPARK_HOME}/conf/spark-defaults.conf"
 
 echo 'Configuration done, starting Spark...'
 
 /opt/spark/bin/spark-submit --master spark://${SPARK_MASTER_IP}:7077 --executor-memory=${SPARK_EXECUTOR_RAM} "$@"
+
+copy_to=${ZOE_WORKSPACE}/spark-events/
+if [ ! -d ${copy_to} ]; then 
+    mkdir -p ${copy_to}; 
+fi; 
+cp $(find /tmp/spark-events -type f | head -n 1) ${copy_to}
 
