@@ -39,7 +39,7 @@ mkdir -p ${log_dir}
 cat "${SPARK_HOME}/conf/spark-defaults.conf"
 
 
-/opt/spark/sbin/start-history-server.sh &
+#/opt/spark/sbin/start-history-server.sh &
 #sudo service spark-history-server start
 
 /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master --host $SPARK_MASTER_IP --port $SPARK_MASTER_PORT --webui-port $SPARK_MASTER_WEBUI_PORT $@
