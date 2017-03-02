@@ -43,5 +43,9 @@ copy_to=${ZOE_WORKSPACE}/spark-events/
 if [ ! -d ${copy_to} ]; then 
     mkdir -p ${copy_to}; 
 fi; 
-cp $(find /tmp/spark-events -type f | head -n 1) ${copy_to}
+
+file_name=$(find /tmp/spark-events -type f | head -n 1)
+
+cp ${filename} ${copy_to}
+chmod 644 ${copy_to}$(basename ${filename})
 
