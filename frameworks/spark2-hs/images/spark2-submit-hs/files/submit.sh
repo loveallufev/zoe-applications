@@ -46,6 +46,10 @@ fi;
 
 file_name=$(find /tmp/spark-events -type f | head -n 1)
 
-cp ${filename} ${copy_to}
-chmod 644 ${copy_to}$(basename ${filename})
+gzip ${file_name}
+cp ${file_name}.gz ${copy_to}
+current_user=$(stat -c "%U" $ZOE_WORKSPACE)
+current_group=$(stat -c "%G" $ZOE_WORKSPACE)
+chown $current_user:$current_group  ${copy_to}$(basename ${file_name}.gz)
+#chmod 644 ${copy_to}$(basename ${file_name}.gz)
 

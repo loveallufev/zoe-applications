@@ -33,6 +33,8 @@ RUN apt-get update && apt-get install -y --force-yes --no-install-recommends \
     pandoc \
     libopenblas-dev \
     libjpeg-dev \
+    gzip \
+    gunzip \
     && apt-get clean
 
 RUN locale-gen en_US.UTF-8
